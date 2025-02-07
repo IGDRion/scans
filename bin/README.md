@@ -31,7 +31,7 @@ step3_perform_seq_alignment.sh --query_fa $QUERY_FA --query_gtf $QUERY_GTF \
 [--biotype $BIOTYPE --flank $FLANK --identity $IDENTITY]
 ```
 
-
+```
 WORKDIR
 └── work
     ├── input_data
@@ -78,6 +78,7 @@ WORKDIR
                 ├── reference_all_genes.fa
                 ├── reference_all_to_target_all.sam
                 └── unmapped_features.txt
+```
 
 **Note:**
 - For sequence alignment (method3), species names correspond to annotation file name
