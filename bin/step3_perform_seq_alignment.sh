@@ -97,12 +97,11 @@ SPECIES1=$(basename $QUERY_GTF .gtf)
 SPECIES2=$(basename $TARGET_GTF .gtf)
 
 ### STEP1 - liftoff
-RESULTS=$WORKDIR/work/method3
+RESULTS="$WORKDIR"/work/method3/"$SPECIES1"_to_"$SPECIES2"
 mkdir ${RESULTS}
+
 echo "Step1: liftoff analysis - IN PROGRESS"
 echo "Working directory: $WORKDIR"
-
-
 
 # perform sequence alignment according BIOTYPE argument
 echo "Gene biotype to analyze: $BIOTYPE"
@@ -114,8 +113,8 @@ case "$BIOTYPE" in
         echo "Features file created: $FEATURES"
 
         ### create outfile and outdir
-        LIFTOFF_DIR="$RESULTS"/"$SPECIES1"_to_"$SPECIES2"_flank"$FLANK"
-        LO_OUT="$RESULTS"/liftoff_"$SPECIES1"_to_"$SPECIES2"_flank"$FLANK".gtf
+        LIFTOFF_DIR="$RESULTS"/liftoff_flank"$FLANK"
+        LO_OUT="$LIFTOFF_DIR"/liftoff_"$SPECIES1"_to_"$SPECIES2"_flank"$FLANK".gtf
 
         ### launch liftoff script
         echo "Launch liftoff analysis: "
@@ -137,17 +136,18 @@ while [ ! -f "$LO_OUT" ] || [ "$(lsof "$LO_OUT" 2>/dev/null)" ]; do
     sleep 60
 done
 
-
-# to check if unmapped file is there => no need if -u works
-#mv $RESULTS/unmapped_features.txt $LIFTOFF_DIR
+# move features file in liftoff dir
+mv $FEATURES $LIFTOFF_DIR
 
 ### STEP2 - Bedtools intersect
 echo "Step2: bedtools analysis - IN PROGRESS"
+BEDTOOLS_DIR="$RESULTS"/bedtools_intersect
+mkdir ${BEDTOOLS_DIR}
 
 ### create outfile for liftoff output, target annotation and bedtools output
-LO_BED="$RESULTS"/$(basename $LO_OUT .gtf).bed
-TARGET_BED="$RESULTS"/"$SPECIES2".bed
-FINAL_BED="$RESULTS"/overlap_"$SPECIES1"_to_"$SPECIES2".bed
+LO_BED="$BEDTOOLS_DIR"/$(basename $LO_OUT .gtf).bed
+TARGET_BED="$BEDTOOLS_DIR"/"$SPECIES2".bed
+FINAL_BED="$BEDTOOLS_DIR"/overlap_"$SPECIES1"_to_"$SPECIES2".bed
 
 #### format gtf in bed 
 . format_gtf2bed.sh $LO_OUT > $LO_BED
@@ -165,10 +165,12 @@ echo "bedtools intersect -a $LO_BED -b $TARGET_BED -wao -split > $FINAL_BED"
 
 ### STEP3 - Sequence alignment analysis
 echo "Step3: Sequence alignment analysis - IN PROGRESS"
+ALIGN_DIR="$RESULTS"/alignment_analysis
+mkdir ${ALIGN_DIR}
 
 # load conda env => en créer un spécifiquement pour ça ??
 . /local/env/envconda.sh
 conda activate /home/genouest/cnrs_umr6290/abesson/conda_env/jupyterR_env
 
-echo "Rscript seq_alignment_analysis.R $QUERY_GTF $TARGET_GTF $FINAL_BED $LIFTOFF_DIR/unmapped_features.txt $RESULTS"
-Rscript seq_alignment_analysis.R $QUERY_GTF $TARGET_GTF $FINAL_BED $LIFTOFF_DIR/unmapped_features.txt $RESULTS
+echo "Rscript seq_alignment_analysis.R $QUERY_GTF $TARGET_GTF $FINAL_BED $LIFTOFF_DIR/unmapped_features.txt $ALIGN_DIR"
+Rscript seq_alignment_analysis.R $QUERY_GTF $TARGET_GTF $FINAL_BED $LIFTOFF_DIR/unmapped_features.txt $ALIGN_DIR
