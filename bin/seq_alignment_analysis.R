@@ -66,17 +66,15 @@ getGTFinfo <- function(gtf_path, species){
 
 # Input --------------------------------------------------------------------------------------
 
-species1 <- str_extract(overlap_bed, "(?<=overlap_).*?(?=_to_)")
-species2 <- str_extract(overlap_bed, "(?<=_to_).*?(?=\\.bed)")
+species1 <- str_extract(basename(overlap_bed), "(?<=overlap_).*?(?=_to_)")
+species2 <- str_extract(basename(overlap_bed), "(?<=_to_).*?(?=\\.bed)")
 
-## retrieve gtf info for both species (choose between species name or query/target)
+## retrieve gtf info for both species 
 cat("Get transcript/gene info from: ", query_gtf, "\n")
-query_gtf <- getGTFinfo(query_gtf, "query")
-#query_df <- getGTFinfo(query_gtf, species1)
+query_df <- getGTFinfo(query_gtf, "query")
 
 cat("Get transcript/gene info from: ", target_gtf, "\n")
-target_gtf <- getGTFinfo(target_gtf, "target")
-#target_df <- getGTFinfo(target_gtf, species2)
+target_df <- getGTFinfo(target_gtf, "target")
 
 ## format intersection output file from bedtools
 cat("Format bedtools intersection file: ", overlap_bed, "\n")
@@ -103,7 +101,7 @@ query_genes <- query_df %>%
     select(query_gene_name, query_gene_id, query_gene_biotype) %>%
     distinct()
 unmap_df <- unmap_df %>%
-    left_join(query_genes, by = c("query_gene_id" = paste0(query,"_gene_id")))
+    left_join(query_genes, by = "query_gene_id")
 print(table(unmap_df$target_gene_biotype, useNA = "ifany"))
 
 out_file_zero <- paste0(species1,"_to_",species2,"_unmapped_genes.txt")
@@ -118,7 +116,7 @@ wo_overlap <- overlap_df %>%
     subset(seqnames_annot == ".") %>% 
     select(seqnames_liftoff, start_liftoff, end_liftoff, query_transcript_id, 
            strand_liftoff, nb_exons_liftoff) %>%
-    left_join(query_df, by = c("query_transcript_id" = paste0(query,"_transcript_id")))
+    left_join(query_df, by = "query_transcript_id")
 
 out_file_wo <- paste0(species1,"_to_",species2,"_mapped_unknownTranscripts.txt")
 write.table(x = wo_overlap, file = out_file_wo, quote = F, row.names = F, sep= "\t")
@@ -127,8 +125,14 @@ cat("File with",species1, "transcripts mapped on ",species2, "but not overlappin
 ## transcripts aligned and overlapping known genes in annotation
 with_overlap <- overlap_df %>% 
     subset(seqnames_annot != ".") %>%
-    left_join(query_df, by = c("query_transcript_id" = paste0(query,"_transcript_id"))) %>%
-    left_join(target_df, by = c("target_transcript_id" = paste0(target,"_transcript_id")))
+    left_join(query_df, by = "query_transcript_id" ) %>%
+    left_join(target_df, by = "target_transcript_id")
+
+## add info if overlap in the same/different strand
+with_overlap$strand_match <- ifelse(
+    with_overlap$strand_liftoff == with_overlap$strand_annot,
+    "same_strand", "antisense"
+)
 
 out_file_with <- paste0(species1,"_to_",species2,"_mapped_knownTranscripts.txt")
 write.table(x = with_overlap, file = out_file_with, quote = F, row.names = F, sep= "\t")
@@ -183,8 +187,15 @@ with_overlap_byGene <- with_overlap %>%
         target_gene_biotype = paste(unique(target_gene_biotype), collapse = ","),
         target_frac_overlap_min = min(target_fraction_overlap),
         target_frac_overlap_max = max(target_fraction_overlap),
+        strand_match = paste(unique(strand_match), collapse = ","),
         overlap_length_min = min(overlap_length),
         overlap_length_max = max(overlap_length))
+
+with_overlap_byGene$strand_match <- ifelse(
+    with_overlap_byGene$strand_match %in% c("antisense", "same_strand"),
+    with_overlap_byGene$strand_match,
+    "both"
+)
 
 ### add query gene classification (nb target genes overlapping + classif)
 with_overlap_byGene$nb_overlap_target_genes <- count.fields(textConnection(with_overlap_byGene$target_gene_id), 
