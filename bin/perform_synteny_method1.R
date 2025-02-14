@@ -38,8 +38,12 @@ dir.create(file.path(SYNTDIR, "mergedSyntenyBySpecies"), showWarnings = FALSE)
 input_file <- read.table(config_file, header = TRUE, sep = ",", stringsAsFactors = FALSE)
 input_file
 
+## gnInfo files
+gnInfo.list <- list.files(file.path(working_dir,"work/input_data/gnInfo"), "gnInfo.tsv", full.names = T)
+gnInfo.list
+
 ## complete biotype labelling
-PCG.regex <- c("protein_coding")
+PCG.regex <- c("protein_coding","mRNA")
 lncRNA.regex <- c("lncRNA","lincRNA", "antisense", "sense_overlapping", "sense_intronic")
 
 
@@ -49,7 +53,7 @@ lncRNA.regex <- c("lncRNA","lincRNA", "antisense", "sense_overlapping", "sense_i
 pcgIdEachSide <- function(y){
     x <- y["gene_id"]
     ## lncRNA position
-    chrLNC <- y["seqname"]
+    chrLNC <- y["seqnames"]
     startLNC <- as.numeric(y["start"])
     endLNC <- as.numeric(y["end"])
     strandLNC <- y["strand"]
@@ -58,27 +62,27 @@ pcgIdEachSide <- function(y){
     endLNC_real <- endLNC
     
     ## Left PCG
-    leftPCG <- GTF[GTF$seqname == chrLNC & GTF$start < startLNC & GTF$simpleBiotype == "pcg" , ]
+    leftPCG <- GTF[GTF$seqnames == chrLNC & GTF$start < startLNC & GTF$simpleBiotype == "pcg" , ]
     if (nrow(leftPCG) > 0) {
-        leftPCG <- leftPCG[, c("seqname", "start", "end", "strand", "gene_id")]
+        leftPCG <- leftPCG[, c("seqnames", "start", "end", "strand", "gene_id")]
         leftPCG$diff <- startLNC_real - leftPCG$start
         leftPCG <- leftPCG[leftPCG$diff == min(leftPCG$diff), ]
         leftPCG <- leftPCG[1, ]
     } else {
         leftPCG <- data.frame(t(rep(NA, 6)), stringsAsFactors = F)
-        colnames(leftPCG) <- c("seqname", "start", "end", "strand", "gene_id", "diff")
+        colnames(leftPCG) <- c("seqnames", "start", "end", "strand", "gene_id", "diff")
     }
     
     ## Right PCG
-    rightPCG <- GTF[GTF$seqname == chrLNC & GTF$start >= startLNC & GTF$simpleBiotype == "pcg", ]
+    rightPCG <- GTF[GTF$seqnames == chrLNC & GTF$start >= startLNC & GTF$simpleBiotype == "pcg", ]
     if (nrow(rightPCG) > 0) {
-        rightPCG <- rightPCG[, c("seqname", "start", "end", "strand", "gene_id")]
+        rightPCG <- rightPCG[, c("seqnames", "start", "end", "strand", "gene_id")]
         rightPCG$diff <- abs(startLNC_real - rightPCG$start)
         rightPCG <- rightPCG[rightPCG$diff == min(rightPCG$diff), ]
         rightPCG <- rightPCG[1, ]
     }else {
         rightPCG <- data.frame(t(rep(NA, 6)), stringsAsFactors = F)
-        colnames(rightPCG) <- c("seqname", "start", "end", "strand", "gene_id", "diff")
+        colnames(rightPCG) <- c("seqnames", "start", "end", "strand", "gene_id", "diff")
     }
     
     ## Configuration type of the lncRNA compared to the tw PCGs
@@ -390,8 +394,8 @@ for (gnInfo.path in gnInfo.list){
     # Selection of PCG and lncRNA only and format df
     GTF <- GTF %>% 
         subset(gene_biotype %in% c(PCG.regex,lncRNA.regex)) %>%
-        rename(seqname = seqnames) %>%
-        dplyr::select(seqname,start,end,strand,gene_id,gene_name,gene_biotype)
+        #rename(seqname = seqnames) %>%
+        dplyr::select_if(names(.) %in% c("seqnames","start","end","strand","gene_id","gene_name","gene_biotype"))
     cat("Total protein coding and lncRNA genes analyzed: ", length(GTF$gene_id), "\n")
     
     # add simpleBiotype

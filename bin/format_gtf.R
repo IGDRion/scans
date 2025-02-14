@@ -58,7 +58,7 @@ for (i in 1:nrow(input_file)) {
     # select genes and wanted features
     gtf_genes <- gtf_data %>%
         subset(type == "gene") %>%
-        dplyr::select("gene_id","gene_name","gene_biotype","seqnames","start","end","strand")
+        dplyr::select_if(names(.) %in% c("gene_id","gene_name","gene_biotype","seqnames","start","end","strand"))
     
     # add species name
     gtf_genes$species <- GTF.name
@@ -75,6 +75,6 @@ for (i in 1:nrow(input_file)) {
 
 # bind all gtf files and write the output
 gnInfo <- do.call(rbind, gnInfoList)
-write.table(gnInfo, paste0(INPUTDIR,/"allMerged_gnInfo.tsv"), 
+write.table(gnInfo, paste0(INPUTDIR,"/allMerged_gnInfo.tsv"), 
             quote = F, sep = '\t', row.names = F)
 

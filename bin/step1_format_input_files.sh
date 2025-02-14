@@ -78,9 +78,11 @@ conda activate /home/genouest/cnrs_umr6290/abesson/conda_env/jupyterR_env
 #export PATH="/projects/dog/aurore/BrownLincs/module/bin:$PATH" # fonctionne pas -> à revoir pour appeler le script de partout
 
 # launch R script to format gtf files
+echo "ANALYSIS IN PROGRESS: Format gtf files"
 Rscript format_gtf.R $CONFIG $WORKDIR
 
 # launch R script to format orthology if needed
+echo "ANALYSIS IN PROGRESS: Format orthology files"
 if [[ -n $ORTHOLOGY ]]; then
     echo "Directory containing orthology files: $ORTHOLOGY"
     Rscript format_orthology.R $CONFIG $WORKDIR $ORTHOLOGY

@@ -10,19 +10,7 @@
 # Updated by : A. Besson
 ##########################################################################
 
-###########################
-# VARIABLES
-###########################
-
-# input variable
 PROGNAME=$(basename $0)
-CONFIG=$1
-WORKDIR=$2
-ORTHOLOGY=$3
-shift 3 
-
-# optional argument (by default value)
-METHOD="method1"
 
 ###########################
 # CHECK / USAGE
@@ -32,15 +20,53 @@ METHOD="method1"
 # >&2 	: print to STDERR
 usage() {
     echo "#" >&2
-    echo -e "# USAGE: $PROGNAME <CONFIG_FILE> <WORK_DIR> <ORTHOLOGY_DIR> [-s|--synteny method1(default)] " >&2
-    echo -e "# Example: $PROGNAME config.txt results/ orthology/ [-s|--synteny method1|method2|both] " >&2
+    echo -e "# USAGE: $PROGNAME --config <CONFIG_FILE> --workdir <WORK_DIR> --orthology <ORTHOLOGY_DIR> [options]"
+    echo "Options:"
+    echo "--synteny [method1|method2|both]   Synteny method to use (default: method1) "
     exit 1;
 }
 
-# Check number of mandatory arguments
-if [ $# -lt 3 ]; then
-    echo "ERROR : wrong number of mandatory arguments.">&2
-    usage;
+###########################
+# VARIABLES
+###########################
+
+# input variable
+
+CONFIG=""
+WORKDIR=""
+ORTHOLOGY=""
+METHOD="method1"
+
+# Parse command line arguments
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        --config)
+            CONFIG="$2"
+            shift 2
+            ;;
+        --workdir)
+            WORKDIR="$2"
+            shift 2
+            ;;
+        --orthology)
+            ORTHOLOGY="$2"
+            shift 2
+            ;;
+        --synteny)
+            METHOD="$2"
+            shift 2
+            ;;
+        *)
+            usage
+            ;;
+    esac
+done
+
+
+# Check if mandatory arguments are provided
+if [[ -z "$CONFIG" || -z "$WORKDIR" || -z "$ORTHOLOGY" ]]; then
+    echo "Error: Missing mandatory arguments"
+    usage
 fi
 
 if [ ! -d "$ORTHOLOGY" ]; then
@@ -49,36 +75,13 @@ if [ ! -d "$ORTHOLOGY" ]; then
 fi
 
 ###########################
-# GESTION ARGUMENTS
-###########################
-
-while [[ $# -gt 0 ]]; do
-    case "$1" in
-        -s|--synteny)
-            if [[ $2 == "method1" || $2 == "method2" || $2 == "both" ]]; then
-                METHOD=$2
-                shift 2
-            else
-                echo "Error : wrong value for -s/--synteny option. Please choose: method1, method2 or both."
-                exit 1
-            fi
-            ;;
-        *)
-            echo "Not recognized option : $1"
-            usage;
-            exit 1
-            ;;
-    esac
-done
-
-
-###########################
 # CODE PRINCIPAL
 ###########################
 
 echo "Config file analyzed: $CONFIG"
 echo "Working directory: $WORKDIR"
 echo "Directory containing homology files: $ORTHOLOGY"
+echo "Synteny method used for analysis: $METHOD"
 
 # load conda env => en créer un spécifiquement pour ça ??
 . /local/env/envconda.sh
@@ -91,12 +94,14 @@ case "$METHOD" in
         Rscript perform_synteny_method1.R $CONFIG $WORKDIR $ORTHOLOGY
         ;;
     method2)
-        echo "Synteny method applied: method 2"
-        Rscript perform_synteny_method2.R $CONFIG $WORKDIR $ORTHOLOGY
+        echo "Synteny method not available yet"
+        #echo "Synteny method applied: method 2"
+        #Rscript perform_synteny_method2.R $CONFIG $WORKDIR $ORTHOLOGY
         ;;
     both)
-        echo "Synteny method applied: methods 1 and 2"
-        Rscript perform_synteny_method1.R $CONFIG $WORKDIR $ORTHOLOGY
-        Rscript perform_synteny_method2.R $CONFIG $WORKDIR $ORTHOLOGY
+        echo "Both method not available yet"
+        #echo "Synteny method applied: methods 1 and 2"
+        #Rscript perform_synteny_method1.R $CONFIG $WORKDIR $ORTHOLOGY
+        #Rscript perform_synteny_method2.R $CONFIG $WORKDIR $ORTHOLOGY
         ;;
 esac
