@@ -53,7 +53,7 @@ while [[ $# -gt 0 ]]; do
             shift 2
             ;;
         --target_gtf)
-            TARGET_GTFT="$2"
+            TARGET_GTF="$2"
             shift 2
             ;;
         --workdir)
@@ -98,7 +98,7 @@ SPECIES2=$(basename $TARGET_GTF .gtf)
 
 ### STEP1 - liftoff
 RESULTS="$WORKDIR"/work/method3/"$SPECIES1"_to_"$SPECIES2"
-mkdir ${RESULTS}
+mkdir -p ${RESULTS}
 
 echo "Step1: liftoff analysis - IN PROGRESS"
 echo "Working directory: $WORKDIR"

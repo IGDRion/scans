@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --cpus-per-task=8
-#SBATCH --mem=32G
+#SBATCH --mem=64G
 #SBATCH --mail-user aurore.besson@univ-rennes.fr
 #SBATCH --mail-type=ALL
 
@@ -12,9 +12,9 @@
 
 # input variable
 PROGNAME=$(basename $0)
-GTF_REF=$1
-FASTA_REF=$2
-FASTA_QUERY=$3
+QUERY_GTF=$1
+QUERY_FA=$2
+TARGET_FA=$3
 FLANK=$4
 OUTFILE=$5
 FEATURES=$6
@@ -24,7 +24,7 @@ OUTDIR=$7
 # >&2 	: print to STDERR
 usage() {
     echo "#" >&2
-    echo -e "# USAGE: $PROGNAME <GTF_REF> <FASTA_REF> <FASTA_QUERY> <FLANK> <OUTFILE> <FEATURES> <TEMP_DIR> " >&2
+    echo -e "# USAGE: $PROGNAME <QUERY_GTF> <QUERY_FA> <TARGET_FA> <FLANK> <OUTFILE> <FEATURES> <TEMP_DIR> " >&2
     exit 1;
 }
 ##############################
@@ -48,7 +48,7 @@ conda activate activate /home/genouest/cnrs_umr6290/abesson/conda_env/liftoff_en
 # run liftoff
 
 ## run liftoff tool
-echo "liftoff -g $GTF_REF -o $OUTFILE -p 8 $FASTA_QUERY $FASTA_REF -flank $FLANK -f $FEATURES -dir $OUTDIR -u $OUTDIR/unmapped_features.txt"
-liftoff -g $GTF_REF -o $OUTFILE -p 8 $FASTA_QUERY $FASTA_REF -flank $FLANK -f $FEATURES -dir $OUTDIR -u $OUTDIR/unmapped_features.txt
+echo "liftoff -g $QUERY_GTF -o $OUTFILE -p 8 $TARGET_FA $QUERY_FA -flank $FLANK -f $FEATURES -dir $OUTDIR -u $OUTDIR/unmapped_features.txt"
+liftoff -g $QUERY_GTF -o $OUTFILE -p 8 $TARGET_FA $QUERY_FA -flank $FLANK -f $FEATURES -dir $OUTDIR -u $OUTDIR/unmapped_features.txt
 
 # -u for unmapped file to write

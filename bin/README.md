@@ -23,7 +23,7 @@ ENSCAFG00845000004
 ```
 step1_format_input_files.sh $CONFIG $WORKDIR [-o $ORTHOLOGY]
 
-step2_perform_synteny.sh $CONFIG $WORKDIR $ORTHOLOGY [-s $METHOD]
+step2_perform_synteny.sh --config $CONFIG --workdir $WORKDIR --orthology $ORTHOLOGY [-s $METHOD]
 # only method1 works for now (default)
 
 step3_perform_seq_alignment.sh --query_fa $QUERY_FA --query_gtf $QUERY_GTF \
@@ -94,7 +94,7 @@ ORTHOLOGY=/projects/dog/aurore/BrownLincs/module/test1/ortho_noformat
 
 # scripts: format input + synteny method 1
 sbatch step1_format_input_files.sh $CONFIG $WORKDIR -o $ORTHOLOGY
-sbatch step2_perform_synteny.sh $CONFIG $WORKDIR $ORTHOLOGY
+sbatch step2_perform_synteny.sh --config $CONFIG --workdir $WORKDIR --orthology $ORTHOLOGY
 
 # variables for step 3 -> change input file names
 QUERY_FA=$WORKDIR/data/hsap.fa
