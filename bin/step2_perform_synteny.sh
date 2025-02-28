@@ -94,9 +94,10 @@ case "$METHOD" in
         Rscript perform_synteny_method1.R $CONFIG $WORKDIR $ORTHOLOGY
         ;;
     method2)
-        echo "Synteny method not available yet"
-        #echo "Synteny method applied: method 2"
-        #Rscript perform_synteny_method2.R $CONFIG $WORKDIR $ORTHOLOGY
+        echo "Synteny method applied: method 2"
+        sbatch getLNCclassFromFEELnc.sh $CONFIG $WORKDIR
+        # wait for data to continue code !!
+        Rscript perform_synteny_method2.R $CONFIG $WORKDIR $ORTHOLOGY
         ;;
     both)
         echo "Both method not available yet"

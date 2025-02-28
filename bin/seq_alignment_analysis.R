@@ -44,6 +44,13 @@ getGTFinfo <- function(gtf_path, species){
     } else {
         print("GTF file format OK.")
     }
+    # check if gene_name is present or create column with NAs
+    if (!"gene_name" %in% colnames(gtf_df)) {
+        gtf_df <- gtf_df %>% add_column(gene_name = NA)
+        print("'gene_name' column has been created.")
+    } else {
+        print("'gene_name' already in GTF.")
+    }
     # get tx length by summing exon lengths
     exons_df <- gtf_df %>%
         subset(type == "exon") %>%
@@ -52,7 +59,7 @@ getGTFinfo <- function(gtf_path, species){
     # merge to have all info
     info_df <- gtf_df %>%
         subset(type == "transcript") %>%
-        select(transcript_id, transcript_biotype, gene_name, gene_id, gene_biotype) %>%
+        dplyr::select(transcript_id, transcript_biotype, gene_name, gene_id, gene_biotype) %>%
         left_join(exons_df, by = "transcript_id")
     colnames(info_df) <- c(paste0(species,"_transcript_id"),
                            paste0(species,"_transcript_biotype"),
@@ -102,7 +109,7 @@ query_genes <- query_df %>%
     distinct()
 unmap_df <- unmap_df %>%
     left_join(query_genes, by = "query_gene_id")
-print(table(unmap_df$target_gene_biotype, useNA = "ifany"))
+print(table(unmap_df$query_gene_biotype, useNA = "ifany"))
 
 out_file_zero <- paste0(species1,"_to_",species2,"_unmapped_genes.txt")
 write.table(x = unmap_df, file = out_file_zero, quote = F, row.names = F, sep= "\t")
@@ -120,7 +127,7 @@ wo_overlap <- overlap_df %>%
 
 out_file_wo <- paste0(species1,"_to_",species2,"_mapped_unknownTranscripts.txt")
 write.table(x = wo_overlap, file = out_file_wo, quote = F, row.names = F, sep= "\t")
-cat("File with",species1, "transcripts mapped on ",species2, "but not overlapping with known transcripts in annotation: ", out_file_wo, "\n")
+cat("File with",species1, "transcripts mapped on",species2, "but not overlapping with known transcripts in annotation: ", out_file_wo, "\n")
 
 ## transcripts aligned and overlapping known genes in annotation
 with_overlap <- overlap_df %>% 
@@ -136,7 +143,7 @@ with_overlap$strand_match <- ifelse(
 
 out_file_with <- paste0(species1,"_to_",species2,"_mapped_knownTranscripts.txt")
 write.table(x = with_overlap, file = out_file_with, quote = F, row.names = F, sep= "\t")
-cat("File with ",species1, " transcripts mapped on ",species2, " and overlapping with known transcripts in annotation: ", out_file_with, "\n")
+cat("File with",species1, "transcripts mapped on",species2, "and overlapping with known transcripts in annotation: ", out_file_with, "\n")
    
 # gene analysis -------------------------------------------------------------------------------
 cat("STEP 3 - Intersection analysis at gene level", "\n")
@@ -163,12 +170,12 @@ wo_overlap_genes$classification <- ifelse(
 wo_overlap_genes <- wo_overlap_genes %>%
     subset(classification == "one-to-unknown_gene")
 
-cat("Classification of query genes depending if at least one tx overlaps target gtf", "\n")
+cat("Classification of query genes depending if at least one transcript overlaps target gtf", "\n")
 print(table(wo_overlap_genes$classification, wo_overlap_genes$query_gene_biotype))
 
 out_file_genes_wo <- paste0(species1,"_to_",species2,"_mapped_unknownGenes.txt")
 write.table(x = wo_overlap_genes, file = out_file_genes_wo, quote = F, row.names = F, sep= "\t")
-cat("File with ",species1, " genes mapped on ",species2, " but not overlapping with known genes in annotation: ", out_file_genes_wo, "\n")
+cat("File with",species1, "genes mapped on",species2, "but not overlapping with known genes in annotation: ", out_file_genes_wo, "\n")
 
 ## genes aligned and overlapping known genes in annotation
 

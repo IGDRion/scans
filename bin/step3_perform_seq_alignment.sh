@@ -114,7 +114,7 @@ case "$BIOTYPE" in
 
         ### create outfile and outdir
         LIFTOFF_DIR="$RESULTS"/liftoff_flank"$FLANK"
-        LO_OUT="$LIFTOFF_DIR"/liftoff_"$SPECIES1"_to_"$SPECIES2"_flank"$FLANK".gtf
+        LO_OUT=liftoff_"$SPECIES1"_to_"$SPECIES2"_flank"$FLANK".gtf
 
         ### launch liftoff script
         echo "Launch liftoff analysis: "
@@ -138,6 +138,9 @@ done
 
 # move features file in liftoff dir
 mv $FEATURES $LIFTOFF_DIR
+mv $LO_OUT $RESULTS
+
+LO_OUT2="$RESULTS"/"$LO_OUT"
 
 ### STEP2 - Bedtools intersect
 echo "Step2: bedtools analysis - IN PROGRESS"
@@ -145,12 +148,12 @@ BEDTOOLS_DIR="$RESULTS"/bedtools_intersect
 mkdir ${BEDTOOLS_DIR}
 
 ### create outfile for liftoff output, target annotation and bedtools output
-LO_BED="$BEDTOOLS_DIR"/$(basename $LO_OUT .gtf).bed
+LO_BED="$BEDTOOLS_DIR"/$(basename $LO_OUT2 .gtf).bed
 TARGET_BED="$BEDTOOLS_DIR"/"$SPECIES2".bed
 FINAL_BED="$BEDTOOLS_DIR"/overlap_"$SPECIES1"_to_"$SPECIES2".bed
 
 #### format gtf in bed 
-. format_gtf2bed.sh $LO_OUT > $LO_BED
+. format_gtf2bed.sh $LO_OUT2 > $LO_BED
 echo "Bed file created: $LO_BED"
 
 . format_gtf2bed.sh $TARGET_GTF > $TARGET_BED

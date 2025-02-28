@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --cpus-per-task=8
-#SBATCH --mem=64G
+#SBATCH --mem=62G
 #SBATCH --mail-user aurore.besson@univ-rennes.fr
 #SBATCH --mail-type=ALL
 
@@ -52,3 +52,8 @@ echo "liftoff -g $QUERY_GTF -o $OUTFILE -p 8 $TARGET_FA $QUERY_FA -flank $FLANK 
 liftoff -g $QUERY_GTF -o $OUTFILE -p 8 $TARGET_FA $QUERY_FA -flank $FLANK -f $FEATURES -dir $OUTDIR -u $OUTDIR/unmapped_features.txt
 
 # -u for unmapped file to write
+# -polish à rajouter
+# vérifier si recherche de duplicats par defaut => -copies utilisé au début et supprimé ensuite
+# -overlap 0.5 kezaco ?
+# -a 0.5 by default (coverage)
+# -s 0.5 by default (identity)
