@@ -9,6 +9,7 @@
 suppressMessages(suppressWarnings(library(rtracklayer)))
 suppressMessages(suppressWarnings(library(dplyr)))
 suppressMessages(suppressWarnings(library(stringr)))
+suppressMessages(suppressWarnings(library(tidyverse)))
 
 # Variables -----------------------------------------------------------------------------------
 ## parse command line arguments
