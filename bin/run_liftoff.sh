@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --cpus-per-task=8
-#SBATCH --mem=62G
+#SBATCH --mem=34G
 #SBATCH --mail-user aurore.besson@univ-rennes.fr
 #SBATCH --mail-type=ALL
 
@@ -48,11 +48,11 @@ conda activate activate /home/genouest/cnrs_umr6290/abesson/conda_env/liftoff_en
 # run liftoff
 
 ## run liftoff tool
-echo "liftoff -g $QUERY_GTF -o $OUTFILE -p 8 $TARGET_FA $QUERY_FA -flank $FLANK -f $FEATURES -dir $OUTDIR -u $OUTDIR/unmapped_features.txt"
-liftoff -g $QUERY_GTF -o $OUTFILE -p 8 $TARGET_FA $QUERY_FA -flank $FLANK -f $FEATURES -dir $OUTDIR -u $OUTDIR/unmapped_features.txt
+echo "liftoff -g $QUERY_GTF -o $OUTFILE -p 8 $TARGET_FA $QUERY_FA -flank $FLANK -f $FEATURES -dir $OUTDIR -u $OUTDIR/unmapped_features.txt -copies"
+liftoff -g $QUERY_GTF -o $OUTFILE -p 8 $TARGET_FA $QUERY_FA -flank $FLANK -f $FEATURES -dir $OUTDIR -u $OUTDIR/unmapped_features.txt -copies
 
-# -u for unmapped file to write
-# -polish à rajouter
+
+# -polish à rajouter ?
 # vérifier si recherche de duplicats par defaut => -copies utilisé au début et supprimé ensuite
 # -overlap 0.5 kezaco ?
 # -a 0.5 by default (coverage)
