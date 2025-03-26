@@ -94,10 +94,15 @@ case "$METHOD" in
         Rscript perform_synteny_method1.R $CONFIG $WORKDIR $ORTHOLOGY
         ;;
     method2)
-        echo "Synteny method applied: method 2"
-        sbatch getLNCclassFromFEELnc.sh $CONFIG $WORKDIR
-        # wait for data to continue code !!
-        Rscript perform_synteny_method2.R $CONFIG $WORKDIR $ORTHOLOGY
+        echo "Synteny method 2: perform FEELnc classification"      
+        job_id=$(sbatch --parsable getLNCclassFromFEELnc.sh "$CONFIG" "$WORKDIR")
+        echo "Submitted job $job_id: sbatch getLNCclassFromFEELnc.sh $CONFIG $WORKDIR"
+
+        # check file are created before continuing script
+        echo "Synteny method 2: submit synteny job with dependency..."
+        syn_job_id=$(sbatch --parsable --dependency=afterok:"$job_id" --wrap "Rscript perform_synteny_method2.R \"$CONFIG\" \"$WORKDIR\" \"$ORTHOLOGY\"")
+
+        echo "Synteny job $syn_job_id will start after completion of $job_id" 
         ;;
     both)
         echo "Both method not available yet"
