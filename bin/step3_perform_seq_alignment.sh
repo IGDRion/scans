@@ -1,6 +1,6 @@
 #!/bin/bash
-#SBATCH --mem=6G
-#SBATCH --cpus-per-task=1
+#SBATCH --mem=34G
+#SBATCH --cpus-per-task=8
 #SBATCH --mail-user aurore.besson@univ-rennes.fr
 #SBATCH --mail-type=ALL
 
@@ -119,14 +119,19 @@ case "$BIOTYPE" in
         grep -v '#' $QUERY_GTF | cut -f3 | sort | uniq > $FEATURES
         echo "Features file created: $FEATURES"
 
-        ### create outfile and outdir
+        ## create outfile and outdir
         LIFTOFF_DIR="$RESULTS"/liftoff_flank"$FLANK"
         LO_OUT=liftoff_"$SPECIES1"_to_"$SPECIES2"_flank"$FLANK".gtf
 
-        ### launch liftoff script
+        ## launch liftoff script
         echo "Launch liftoff analysis: "
-        echo "sbatch run_liftoff.sh $QUERY_GTF $QUERY_FA $TARGET_FA $FLANK $LO_OUT $FEATURES $LIFTOFF_DIR"
-        sbatch run_liftoff.sh $QUERY_GTF $QUERY_FA $TARGET_FA $FLANK $LO_OUT $FEATURES $LIFTOFF_DIR
+        ### source environment
+        . /local/env/envconda3.sh
+        conda activate activate /home/genouest/cnrs_umr6290/abesson/conda_env/liftoff_env
+
+        ### run liftoff
+        echo "liftoff -g $QUERY_GTF -o $LO_OUT -p 8 $TARGET_FA $QUERY_FA -flank $FLANK -f $FEATURES -dir $LIFTOFF_DIR -u $LIFTOFF_DIR/unmapped_features.txt -copies"
+        liftoff -g $QUERY_GTF -o $LO_OUT -p 8 $TARGET_FA $QUERY_FA -flank $FLANK -f $FEATURES -dir $LIFTOFF_DIR -u $LIFTOFF_DIR/unmapped_features.txt -copies
 
         ;;
     lncRNA)
@@ -136,11 +141,6 @@ case "$BIOTYPE" in
         echo "option not available yet"
         ;;
 esac
-
-### check if file exists or used by process before continuing script
-while [ ! -f "$LO_OUT" ] || [ "$(lsof "$LO_OUT" 2>/dev/null)" ]; do
-    sleep 60
-done
 
 # move features file in liftoff dir
 mv $FEATURES $LIFTOFF_DIR
@@ -154,15 +154,10 @@ echo "Step2: liftoff results filtering - IN PROGRESS"
 # filtered file
 LO_FILTER="$RESULTS"/$(basename $LO_OUT2 .gtf)_filtered.gtf
 
-. /local/env/envconda.sh
+conda deactivate
 conda activate /home/genouest/cnrs_umr6290/abesson/conda_env/jupyterR_env
 
 Rscript filter_liftoffOutput.R $LO_OUT2 $LO_FILTER $COVERAGE $IDENTITY $RESULTS
-
-### check if file exists or used by process before continuing script
-while [ ! -f "$LO_FILTER" ] || [ "$(lsof "$LO_FILTER" 2>/dev/null)" ]; do
-    sleep 30
-done
 
 ### STEP3 - Bedtools intersect
 echo "Step3: bedtools analysis - IN PROGRESS"
@@ -195,6 +190,7 @@ ALIGN_DIR="$RESULTS"/alignment_analysis
 mkdir ${ALIGN_DIR}
 
 # load conda env => en créer un spécifiquement pour ça ??
+conda deactivate
 conda activate /home/genouest/cnrs_umr6290/abesson/conda_env/jupyterR_env
 
 echo "Rscript seq_alignment_analysis.R $QUERY_GTF $TARGET_GTF $FINAL_BED $LIFTOFF_DIR/unmapped_features.txt $ALIGN_DIR"

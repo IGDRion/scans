@@ -30,10 +30,8 @@ dir.create(file.path(INPUTDIR, "orthology"), showWarnings = FALSE, recursive = T
 # Input --------------------------------------------------------------------------------------
 
 input_data <- read.table(config_file, header = TRUE, sep = ",", stringsAsFactors = FALSE)
-input_data
 
 ortho.list <- list.files(orthology_dir, ".tsv", full.names = T)
-ortho.list
 
 # Functions ---------------------------------------------------------------------------------------
 

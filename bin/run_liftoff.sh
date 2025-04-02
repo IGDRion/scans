@@ -50,10 +50,3 @@ conda activate activate /home/genouest/cnrs_umr6290/abesson/conda_env/liftoff_en
 ## run liftoff tool
 echo "liftoff -g $QUERY_GTF -o $OUTFILE -p 8 $TARGET_FA $QUERY_FA -flank $FLANK -f $FEATURES -dir $OUTDIR -u $OUTDIR/unmapped_features.txt -copies"
 liftoff -g $QUERY_GTF -o $OUTFILE -p 8 $TARGET_FA $QUERY_FA -flank $FLANK -f $FEATURES -dir $OUTDIR -u $OUTDIR/unmapped_features.txt -copies
-
-
-# -polish à rajouter ?
-# vérifier si recherche de duplicats par defaut => -copies utilisé au début et supprimé ensuite
-# -overlap 0.5 kezaco ?
-# -a 0.5 by default (coverage)
-# -s 0.5 by default (identity)

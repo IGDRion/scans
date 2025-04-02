@@ -36,11 +36,9 @@ dir.create(file.path(SYNTDIR, "mergedSyntenyBySpecies"), showWarnings = FALSE)
 
 ## configuration file
 input_file <- read.table(config_file, header = TRUE, sep = ",", stringsAsFactors = FALSE)
-input_file
 
 ## gnInfo files
 gnInfo.list <- list.files(file.path(working_dir,"work/input_data/gnInfo"), "gnInfo.tsv", full.names = T)
-gnInfo.list
 
 ## complete biotype labelling
 PCG.regex <- c("protein_coding","mRNA")
@@ -389,7 +387,6 @@ for (gnInfo.path in gnInfo.list){
     GTF.name <- gsub("_gnInfo.tsv","",basename(gnInfo.path), fixed=T)
     cat(GTF.name, "\n")
     GTF <- read.delim(gnInfo.path, header = T, stringsAsFactors = F)
-    cat("total: ", dim(GTF), "\n")
 
     # Selection of PCG and lncRNA only and format df
     GTF <- GTF %>% 
