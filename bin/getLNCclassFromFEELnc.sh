@@ -55,7 +55,7 @@ regEx_lncRNA='gene_biotype\s\"(lncRNA|lincRNA|sense_intronic|sense_exonic|sense_
 regEx_mRNA='gene_biotype\s\"(protein_coding|mRNA)\"'
 
 # Extraction PCG et lncRNA
-sed 1d $CONFIG | while IFS=',' read -r completeName shortName pathToGTF;
+sed 1d $CONFIG | while IFS=',' read -r completeName shortName pathToGTF pathToFasta;
 do
     echo $pathToGTF ;
     grep -v "#" $pathToGTF | grep -P $regEx_lncRNA > ${OUTDIR}/${completeName}_LNCextracted.tmp.gtf;
@@ -67,7 +67,7 @@ mkdir ${OUTDIR}/logs
 
 job_ids=()
 
-while IFS=',' read -r completeName shortName pathToGTF;
+while IFS=',' read -r completeName shortName pathToGTF pathToFasta;
 do
     output_name=$(basename "$pathToGTF" .gtf);
     LNC="${OUTDIR}/${completeName}_LNCextracted.tmp.gtf";

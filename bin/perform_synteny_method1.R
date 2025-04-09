@@ -379,8 +379,8 @@ comparisons <- expand.grid(shortName_source = input_file$shortName,
 cat("Pair comparisons to perform by synteny method 1: ", "\n")
 print(comparisons)
 
-## STEP2: find overlapping PCG for each lncRNA by species
-cat("STEP2: find overlapping PCG for each lncRNA by species.", "\n")
+## STEP2: find surrounding PCG for each lncRNA by species
+cat("STEP2: find surrounding PCG for each lncRNA by species.", "\n")
 
 for (gnInfo.path in gnInfo.list){
     # use gnInfo file

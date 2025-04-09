@@ -100,7 +100,7 @@ case "$METHOD" in
 
         echo "Synteny method 2: perform synteny."
         Rscript perform_synteny_method2.R "$CONFIG" "$WORKDIR" "$ORTHOLOGY"
-        echo "bash getLNCclassFromFEELnc.sh $CONFIG $WORKDIR"
+        echo "Rscript perform_synteny_method2.R "$CONFIG" "$WORKDIR" "$ORTHOLOGY""
 
         ;;
     both)
