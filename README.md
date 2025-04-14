@@ -88,7 +88,6 @@ Required input :
   --workdir WORKING_DIR        directory to save results
 
 Options :
-  --thread [INT]               Number of CPUS core available (default: 4) 
   --biotype [mRNA|lncRNA|all]  Biotype to analyze (default: lncRNA)
   --flank [0.0-1.0]            Flank fraction for liftoff (default: 0)
   --coverage [0.0-1.0]         Coverage fraction for liftoff (default: 0.5)
