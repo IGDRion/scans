@@ -1,74 +1,148 @@
 # SCANS
 
-## Description
-Synteny Conservation Analysis for Non-coding sequences (SCANS) is a tool allowing to study lncRNA synteny and sequence conservation between species.
+## Overview
+SCANS (Synteny Conservation Analysis for Non-coding sequences) is a tool allowing to study both lncRNA synteny and sequence conservation across species.
+For each species to be compared, SCANS only requires a reference genome (.fa), a reference annotation (.gtf) containing gene biotype information (e.g., lncRNAs and protein-coding) and the protein-coding orthologs obtained for each pair of species under comparison. SCANS integrates two synteny-based methods that use one (permissive) or two (stringent) protein-coding anchors flanking lncRNAs in the query genome to search for their counterparts in the target genome ([Degalez, 2024](https://www.biorxiv.org/content/10.1101/2024.10.03.616473v1)). The tool also integrates a third complementary method, which directly aligns query lncRNAs to target genomes using a modified version of the Liftoff program ([Shumate and Salzberg, 2020](https://doi.org/10.1093/bioinformatics/btaa1016)).
+
+![SCANS](https://github.com/user-attachments/assets/2a2b1625-7cb2-4bc3-8a68-3ee307c01abd)
+
 
 ## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
+
+Clone scans repository
+```
+git clone https://github.com/IGDRion/scans.git
+```
+Go to scans repository and create conda environment
+```
+cd scans
+conda env create -f envs/scans.yml
+```
+Export SCANSPATH variable
+```
+export SCANSPATH=${PWD}
+
+export PATH=$PATH:${SCANSPATH}/bin/
+```
 
 ## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
 
+SCANS is composed of 3 modules.
 
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
+* step1_format_input_files.sh	: Format input files (annotation, orthology).
+* step2_perform_synteny.sh	: Perform synteny analysis by method1, method2 or both.
+* step3_perform_seq_alignment.sh: Perform sequence alignment using liftoff.
+
+SCANS requires a configuration file as input containing the annotation (gtf format), the sequence (fasta format) and the name of each species to be compared:
+```
+completeName,shortName,pathToGTF,pathToFasta
+Ectocarpus_sp7,ectosp7,/path/to/annotation/ectosp7.gtf,/path/to/sequence/Ectocarpus_sp7.fa
+Ectocarpus_subulatus,esubulatus,/path/to/annotation/esubulatus.gtf,/path/to/sequence/Ectocarpus_subulatus.fa
+Saccharina_latissima,slatissima,/path/to/annotation/slatissima.gtf,/path/to/sequence/Saccharina_latissima.fa
+```
+
+### Step1: format input files
+```
+usage: step1_format_input_files.sh config WORKING_DIR [-o ORTHOLOGY_DIR]
+
+Required input :
+  config              configuration file with paths
+  WORKING_DIR         directory to save results
+
+Options :
+  -o ORTHOLOGY_DIR    path to directory containing orthology files to format for synteny analysis
+
+```
+**Note:**
+Orthology files in ORTHOLOGY_DIR must be formatted as  `<shortName_QUERY>_<shortName_TARGET>_homology.tsv` to be concordant with configuration file.
+
+```
+gene_id	<shortName_TARGET>_homolog	<shortName_TARGET>_homolog_orthology_type
+Ec-05_002070	SL_01-10421	ortholog_one2one
+Ec-05_001920	SL_01-106.1	ortholog_one2one
+Ec-05_001910	SL_01-106.5	ortholog_one2one
+Ec-05_001930	SL_01-107.5	ortholog_one2one
+Ec-05_002080	SL_01-123.7	ortholog_one2one
+Ec-05_002920	SL_01-12579	ortholog_one2many
+```
+
+### Step2: synteny analysis
+```
+usage: step2_perform_synteny.sh --config config --workdir WORKING_DIR --orthology ORTHOLOGY_DIR [--synteny method1|method2|both]
+
+Required input :
+  --config config                     configuration file with paths
+  --workdir WORKING_DIR               directory to save results
+  --orthology ORTHOLOGY_DIR           directory containing formatted orthology files
+
+Options :
+  --synteny [method1|method2|both]    synteny method to perform (default: method1)
+
+```
+### Step3: sequence alignment analysis
+```
+usage: step3_perform_seq_alignment.sh --config config --workdir WORKING_DIR
+
+Required input :
+  --config config              configuration file with paths
+  --workdir WORKING_DIR        directory to save results
+
+Options :
+  --thread [INT]               Number of CPUS core available (default: 4) 
+  --biotype [mRNA|lncRNA|all]  Biotype to analyze (default: lncRNA)
+  --flank [0.0-1.0]            Flank fraction for liftoff (default: 0)
+  --coverage [0.0-1.0]         Coverage fraction for liftoff (default: 0.5)
+  --identity [0.0-1.0]         Sequence identity fraction for liftoff (default: 0)
+```
+
+## Output
+
+```
+WORKING_DIR
+└── work
+    ├── input_data
+    │   ├── allMerged_gnInfo.tsv
+    │   └── gnInfo
+    │       ├── <completeName>_gnInfo.tsv
+    │       ├── Canis_lupus_familiaris_gnInfo.tsv
+    │       ├── Homo_sapiens_gnInfo.tsv
+    │       └── Mus_musculus_gnInfo.tsv
+    ├── method1
+    │   ├── lncBetwPcg
+    │   │   ├── <completeName>_lncRNAbetweenPcg.tsv
+    │   │   ├── Canis_lupus_familiaris_lncRNAbetweenPcg.tsv
+    │   │   ├── Homo_sapiens_lncRNAbetweenPcg.tsv
+    │   │   └── Mus_musculus_lncRNAbetweenPcg.tsv
+    │   ├── mergedSyntenyBySpecies
+    │   │   ├── <completeName>_syntenyMerged.tsv
+    │   │   ├── Canis_lupus_familiaris_syntenyMerged.tsv
+    │   │   ├── Homo_sapiens_syntenyMerged.tsv
+    │   │   └── Mus_musculus_syntenyMerged.tsv
+    │   └── syntenyByPair
+    │       ├── <shortNameQ>_<shortNameT>_synteny.tsv
+    │       ├── cfamiliaris_hsapiens_synteny.tsv
+    │       ├── cfamiliaris_mmusculus_synteny.tsv
+    │       ├── hsapiens_cfamiliaris_synteny.tsv
+    │       ├── hsapiens_mmusculus_synteny.tsv
+    │       ├── mmusculus_cfamiliaris_synteny.tsv
+    │       └── mmusculus_hsapiens_synteny.tsv
+    └── method3
+        ├── hsap
+        │    ├── hsap_to_cfam_lncRNA
+        │    │    ├── alignment_analysis
+        │    │    │   ├── hsap_to_cfam_mapped_knownGenes.txt
+        │    │    │   ├── hsap_to_cfam_mapped_unknownGenes.txt
+        │    │    │   └── hsap_to_cfam_unmapped_genes.txt
+        │    │    ├── bedtools_intersect
+        │    │    │   └── overlap_hsap_to_cfam.bed
+        │    │    └── liftoff_flank0
+        │    │        ├── liftoff_hsap_to_cfam_flank0.gtf
+        │    │        └── unmapped_features.txt
+        │    └── hsap_to_mmus_lncRNA
+        └── mmus
+            ├── mmus_to_cfam_lncRNA
+            └── mmus_to_hsap_lncRNA
+```
 
 ## License
-For open source projects, say how it is licensed.
 
-
-
-
-## Integrate with your tools
-
-- [ ] [Set up project integrations](https://gitlab.com/bioinfog/brownlincs/scans/-/settings/integrations)
-
-## Collaborate with your team
-
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Set auto-merge](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
-
-## Test and Deploy
-
-Use the built-in continuous integration in GitLab.
-
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing (SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
-
-***
-
-
-
-
-
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
-
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
-
-
-
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
-
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
-
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
-
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
-
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
-
-
-
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
