@@ -83,7 +83,7 @@ LOG_FILE="$COMPDIR/alignment.log"
 
     ### source environment
     . /local/env/envconda3.sh
-    conda activate activate /home/genouest/cnrs_umr6290/abesson/conda_env/liftoff_env
+    conda activate activate /home/genouest/cnrs_umr6290/abesson/conda_env/scans_env
 
     ### run liftoff
     file_name=$(basename $QUERY_GTF .gtf)_"$BIOTYPE".gtf
@@ -95,12 +95,12 @@ LOG_FILE="$COMPDIR/alignment.log"
         echo "Feature database not existing. Creation of annotation file according biotype."
         if [[ "$BIOTYPE" == "lncRNA" ]] ; then
             # list of biotype string corresponding to lncRNA
-            lnc_list='"lncRNA"'
-            grep -E "gene_biotype ($(echo $lnc_list | sed 's/ /|/g'))" $QUERY_GTF > "$file_path"
+            lnc_list='"lncRNA" "lincRNA" "antisense" "sense_overlapping" "sense_intronic" "lnc_RNA"'
+            grep -E "biotype ($(echo $lnc_list | sed 's/ /|/g'))" $QUERY_GTF > "$file_path"
         elif [[ "$BIOTYPE" == "mRNA" ]] ; then
             # list of biotype string corresponding to lncRNA
             mrna_list='"mRNA" "protein_coding"'
-            grep -E "gene_biotype ($(echo $mrna_list | sed 's/ /|/g'))" $QUERY_GTF > "$file_path"
+            grep -E "biotype ($(echo $mrna_list | sed 's/ /|/g'))" $QUERY_GTF > "$file_path"
         else
             echo "Error: wrong biotype to analyse"
         fi
@@ -132,9 +132,6 @@ LOG_FILE="$COMPDIR/alignment.log"
     # filtered file
     LO_FILTER="$COMPDIR"/$(basename $LO_OUT2 .gtf)_filtered.gtf
 
-    conda deactivate
-    conda activate /home/genouest/cnrs_umr6290/abesson/conda_env/jupyterR_env
-
     Rscript filter_liftoffOutput.R $LO_OUT2 $LO_FILTER $COVERAGE $IDENTITY $COMPDIR
 
     ### STEP3 - Bedtools intersect
@@ -155,8 +152,6 @@ LOG_FILE="$COMPDIR/alignment.log"
     echo "Bed file created: $TARGET_BED"
 
     #### bedtools intersect - default fraction ~1bp
-    conda deactivate
-    . /local/env/envbedtools-2.27.1.sh
 
     echo "Intersection analysis done by bedtools intersect."
     bedtools intersect -a $LO_BED -b $TARGET_BED -wao -split > $FINAL_BED
@@ -166,10 +161,6 @@ LOG_FILE="$COMPDIR/alignment.log"
     echo "Step4: Sequence alignment analysis - $(date +"%d.%m.%Y %H:%M")"
     ALIGN_DIR="$COMPDIR"/alignment_analysis
     mkdir ${ALIGN_DIR}
-
-    # load conda env => en créer un spécifiquement pour ça ??
-    conda deactivate
-    conda activate /home/genouest/cnrs_umr6290/abesson/conda_env/jupyterR_env
 
     echo "Rscript seq_alignment_analysis.R $QUERY_GTF $TARGET_GTF $FINAL_BED $LIFTOFF_DIR/unmapped_features.txt $ALIGN_DIR"
     Rscript seq_alignment_analysis.R $QUERY_GTF $TARGET_GTF $FINAL_BED $LIFTOFF_DIR/unmapped_features.txt $ALIGN_DIR

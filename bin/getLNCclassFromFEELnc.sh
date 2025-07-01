@@ -51,8 +51,12 @@ mkdir -p $OUTDIR
 # CODE PRINCIPAL
 ###########################
 
-regEx_lncRNA='gene_biotype\s\"(lncRNA|lincRNA|sense_intronic|sense_exonic|sense_overlapping|antisense)\"'
-regEx_mRNA='gene_biotype\s\"(protein_coding|mRNA)\"'
+## check that general biotype will not bug for ensembl files (keep tx and not gene)
+## refseq data tx/exon have transcript_biotype and not gene_biotype
+#regEx_lncRNA='gene_biotype\s\"(lncRNA|lincRNA|sense_intronic|sense_exonic|sense_overlapping|antisense|lnc_RNA)\"'
+#regEx_mRNA='gene_biotype\s\"(protein_coding|mRNA)\"'
+regEx_lncRNA='biotype\s\"(lncRNA|lincRNA|sense_intronic|sense_exonic|sense_overlapping|antisense|lnc_RNA)\"'
+regEx_mRNA='biotype\s\"(protein_coding|mRNA)\"'
 
 # Extraction PCG et lncRNA
 sed 1d $CONFIG | while IFS=',' read -r completeName shortName pathToGTF pathToFasta;

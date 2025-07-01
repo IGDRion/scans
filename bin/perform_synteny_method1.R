@@ -42,7 +42,7 @@ gnInfo.list <- list.files(file.path(working_dir,"work/input_data/gnInfo"), "gnIn
 
 ## complete biotype labelling
 PCG.regex <- c("protein_coding","mRNA")
-lncRNA.regex <- c("lncRNA","lincRNA", "antisense", "sense_overlapping", "sense_intronic")
+lncRNA.regex <- c("lncRNA","lincRNA", "antisense", "sense_overlapping", "sense_intronic", "lnc_RNA")
 
 
 # Functions ---------------------------------------------------------------------------------------

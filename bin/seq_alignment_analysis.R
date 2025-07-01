@@ -106,11 +106,11 @@ colnames(unmap_df) <- "query_gene_id"
 
 ## add gtf info (to change if species name is used instead of query/target !!!)
 query_genes <- query_df %>%
-    select(query_gene_name, query_gene_id, query_gene_biotype) %>%
+    select(query_gene_name, query_gene_id, query_transcript_biotype) %>%
     distinct()
 unmap_df <- unmap_df %>%
     left_join(query_genes, by = "query_gene_id")
-print(table(unmap_df$query_gene_biotype, useNA = "ifany"))
+print(table(unmap_df$query_transcript_biotype, useNA = "ifany"))
 
 out_file_zero <- paste0(species1,"_to_",species2,"_unmapped_genes.txt")
 write.table(x = unmap_df, file = out_file_zero, quote = F, row.names = F, sep= "\t")
@@ -151,7 +151,7 @@ cat("STEP 3 - Intersection analysis at gene level", "\n")
 
 ## genes aligned but not overlapping known genes in annotation
 wo_overlap_genes <- wo_overlap %>%
-    group_by(seqnames_liftoff, strand_liftoff, query_gene_id, query_gene_biotype, query_gene_name) %>%
+    group_by(seqnames_liftoff, strand_liftoff, query_gene_id, query_transcript_biotype, query_gene_name) %>%
     summarise(max_tx_length = max(query_transcript_length),
            nb_tx = n()
     ) %>%
@@ -172,7 +172,7 @@ wo_overlap_genes <- wo_overlap_genes %>%
     subset(classification == "one-to-unknown_gene")
 
 cat("Classification of query genes depending if at least one transcript overlaps target gtf", "\n")
-print(table(wo_overlap_genes$classification, wo_overlap_genes$query_gene_biotype))
+print(table(wo_overlap_genes$classification, wo_overlap_genes$query_transcript_biotype))
 
 out_file_genes_wo <- paste0(species1,"_to_",species2,"_mapped_unknownGenes.txt")
 write.table(x = wo_overlap_genes, file = out_file_genes_wo, quote = F, row.names = F, sep= "\t")
@@ -186,13 +186,13 @@ with_overlap$target_fraction_overlap <- with_overlap$overlap_length / with_overl
 
 ### group by gene and keep min/max value/fraction overlap obtained by tx
 with_overlap_byGene <- with_overlap %>% 
-    group_by(query_gene_id, query_gene_biotype, query_gene_name) %>%
+    group_by(query_gene_id, query_transcript_biotype, query_gene_name) %>%
     summarise(
         query_frac_overlap_min = min(query_fraction_overlap),
         query_frac_overlap_max = max(query_fraction_overlap),
         target_gene_id = paste(unique(target_gene_id), collapse = ","),
         target_gene_name = paste(unique(target_gene_name), collapse = ","),
-        target_gene_biotype = paste(unique(target_gene_biotype), collapse = ","),
+        target_gene_biotype = paste(unique(target_transcript_biotype), collapse = ","),
         target_frac_overlap_min = min(target_fraction_overlap),
         target_frac_overlap_max = max(target_fraction_overlap),
         strand_match = paste(unique(strand_match), collapse = ","),
@@ -215,7 +215,7 @@ with_overlap_byGene <- with_overlap_byGene %>%
                               TRUE ~ "other"))
 
 cat("Classification of query genes overlapping target gtf", "\n")
-print(table(with_overlap_byGene$query_gene_classif, with_overlap_byGene$query_gene_biotype))
+print(table(with_overlap_byGene$query_gene_classif, with_overlap_byGene$query_transcript_biotype))
 
 out_file_genes_with <- paste0(species1,"_to_",species2,"_mapped_knownGenes.txt")
 write.table(x = with_overlap_byGene, file = out_file_genes_with, quote = F, row.names = F, sep= "\t")
