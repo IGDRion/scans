@@ -27,7 +27,7 @@ orthology_dir <- args[3]
 setwd(working_dir)
 
 ## create directories to store data in `method1``
-SYNTDIR <- "work/method1"
+SYNTDIR <- "scans_results/method1"
 dir.create(file.path(SYNTDIR, "lncBetwPcg"), showWarnings = FALSE, recursive = TRUE)
 dir.create(file.path(SYNTDIR, "syntenyByPair"), showWarnings = FALSE)
 dir.create(file.path(SYNTDIR, "mergedSyntenyBySpecies"), showWarnings = FALSE)
@@ -38,7 +38,7 @@ dir.create(file.path(SYNTDIR, "mergedSyntenyBySpecies"), showWarnings = FALSE)
 input_file <- read.table(config_file, header = TRUE, sep = ",", stringsAsFactors = FALSE)
 
 ## gnInfo files
-gnInfo.list <- list.files(file.path(working_dir,"work/input_data/gnInfo"), "gnInfo.tsv", full.names = T)
+gnInfo.list <- list.files(file.path(working_dir,"scans_results/input_data/gnInfo"), "gnInfo.tsv", full.names = T)
 
 ## complete biotype labelling
 PCG.regex <- c("protein_coding","mRNA")

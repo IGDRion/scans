@@ -23,7 +23,7 @@ working_dir <- args[2]
 setwd(working_dir)
 
 ## create directories to store data
-INPUTDIR <- "work/input_data"
+INPUTDIR <- "scans_results/input_data"
 dir.create(file.path(INPUTDIR, "gnInfo"), showWarnings = FALSE, recursive = TRUE)
 
 # Input --------------------------------------------------------------------------------------

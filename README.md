@@ -21,7 +21,6 @@ conda env create -f scans.yml
 Export SCANSPATH variable
 ```
 export SCANSPATH=${PWD}
-
 export PATH=$PATH:${SCANSPATH}/bin/
 ```
 
@@ -29,9 +28,9 @@ export PATH=$PATH:${SCANSPATH}/bin/
 
 SCANS is composed of 3 modules.
 
-* step1_format_input_files.sh	: Format input files (annotation, orthology).
-* step2_perform_synteny.sh	: Perform synteny analysis by method1, method2 or both.
-* step3_perform_seq_alignment.sh: Perform sequence alignment using liftoff.
+* `step1_format_input_files.sh`: Format input files (annotation, orthology).
+* `step2_perform_synteny.sh`: Perform synteny analysis by method1, method2 or both.
+* `step3_perform_seq_alignment.sh`: Perform sequence alignment using liftoff.
 
 SCANS requires a configuration file as input containing the annotation (gtf format), the sequence (fasta format) and the name of each species to be compared:
 ```
@@ -43,17 +42,20 @@ Saccharina_latissima,slatissima,/path/to/annotation/slatissima.gtf,/path/to/sequ
 
 ### Step1: format input files
 ```
-usage: step1_format_input_files.sh config WORKING_DIR [-o ORTHOLOGY_DIR]
+usage: format_input_files.sh --config config --output WORKING_DIR [--orthology ORTHOLOGY_DIR]
 
 Required input :
-  config              configuration file with paths
-  WORKING_DIR         directory to save results
+  --config                      configuration file with paths
+  --output                      directory to save results
 
 Options :
-  -o ORTHOLOGY_DIR    path to directory containing orthology files to format for synteny analysis
+  --orthology ORTHOLOGY_DIR     path to directory containing orthology files to format for synteny analysis
 
 ```
 **Note:**
+
+Orthology files have to be concordant with annotation files (identical `gene_id`, same annotation version) and can be generated using tool as [`OrthoFinder`](https://github.com/davidemms/OrthoFinder) or directly downloaded from Ensembl database (Compara).
+
 Orthology files in ORTHOLOGY_DIR must be formatted as  `<shortName_QUERY>_<shortName_TARGET>_homology.tsv` to be concordant with configuration file.
 
 ```
@@ -68,11 +70,11 @@ Ec-05_002920	SL_01-12579	ortholog_one2many
 
 ### Step2: synteny analysis
 ```
-usage: step2_perform_synteny.sh --config config --workdir WORKING_DIR --orthology ORTHOLOGY_DIR [--synteny method1|method2|both]
+usage: perform_synteny.sh --config config --output WORKING_DIR --orthology ORTHOLOGY_DIR [--synteny method1|method2|both]
 
 Required input :
   --config config                     configuration file with paths
-  --workdir WORKING_DIR               directory to save results
+  --output WORKING_DIR                directory to save results
   --orthology ORTHOLOGY_DIR           directory containing formatted orthology files
 
 Options :
@@ -81,11 +83,11 @@ Options :
 ```
 ### Step3: sequence alignment analysis
 ```
-usage: step3_perform_seq_alignment.sh --config config --workdir WORKING_DIR
+usage: perform_seq_alignment.sh --config config --output WORKING_DIR
 
 Required input :
   --config config              configuration file with paths
-  --workdir WORKING_DIR        directory to save results
+  --output WORKING_DIR         directory to save results
 
 Options :
   --biotype [mRNA|lncRNA|all]  Biotype to analyze (default: lncRNA)
@@ -98,49 +100,40 @@ Options :
 
 ```
 WORKING_DIR
-└── work
+└── scans_results
     ├── input_data
     │   ├── allMerged_gnInfo.tsv
     │   └── gnInfo
-    │       ├── <completeName>_gnInfo.tsv
-    │       ├── Canis_lupus_familiaris_gnInfo.tsv
-    │       ├── Homo_sapiens_gnInfo.tsv
-    │       └── Mus_musculus_gnInfo.tsv
+    │       └── <completeName>_gnInfo.tsv
     ├── method1
     │   ├── lncBetwPcg
-    │   │   ├── <completeName>_lncRNAbetweenPcg.tsv
-    │   │   ├── Canis_lupus_familiaris_lncRNAbetweenPcg.tsv
-    │   │   ├── Homo_sapiens_lncRNAbetweenPcg.tsv
-    │   │   └── Mus_musculus_lncRNAbetweenPcg.tsv
+    │   │   └── <completeName>_lncRNAbetweenPcg.tsv
     │   ├── mergedSyntenyBySpecies
-    │   │   ├── <completeName>_syntenyMerged.tsv
-    │   │   ├── Canis_lupus_familiaris_syntenyMerged.tsv
-    │   │   ├── Homo_sapiens_syntenyMerged.tsv
-    │   │   └── Mus_musculus_syntenyMerged.tsv
+    │   │   └── <completeName>_syntenyMerged.tsv
     │   └── syntenyByPair
-    │       ├── <shortNameQ>_<shortNameT>_synteny.tsv
-    │       ├── cfamiliaris_hsapiens_synteny.tsv
-    │       ├── cfamiliaris_mmusculus_synteny.tsv
-    │       ├── hsapiens_cfamiliaris_synteny.tsv
-    │       ├── hsapiens_mmusculus_synteny.tsv
-    │       ├── mmusculus_cfamiliaris_synteny.tsv
-    │       └── mmusculus_hsapiens_synteny.tsv
+    │       └── <shortNameQ>_<shortNameT>_synteny.tsv
+    ├── method2
+    │   ├── lncClassification
+    │   │   └── <completeName>_lncConfiguration_feelncclassifier.tsv
+    │   ├── mergedSyntenyBySpeciesFeelnc
+    │   │   └── <completeName>_feelncMerged.tsv
+    │   └── syntenyByPairFeelnc
+    │       └── <shortNameQ>-<shortNameT>_lncConfigurationHomologyAggregated.tsv
     └── method3
-        ├── hsap
-        │    ├── hsap_to_cfam_lncRNA
-        │    │    ├── alignment_analysis
-        │    │    │   ├── hsap_to_cfam_mapped_knownGenes.txt
-        │    │    │   ├── hsap_to_cfam_mapped_unknownGenes.txt
-        │    │    │   └── hsap_to_cfam_unmapped_genes.txt
-        │    │    ├── bedtools_intersect
-        │    │    │   └── overlap_hsap_to_cfam.bed
-        │    │    └── liftoff_flank0
-        │    │        ├── liftoff_hsap_to_cfam_flank0.gtf
-        │    │        └── unmapped_features.txt
-        │    └── hsap_to_mmus_lncRNA
-        └── mmus
-            ├── mmus_to_cfam_lncRNA
-            └── mmus_to_hsap_lncRNA
+        └── <shortNameQ>
+            └── <shortNameQ>_to_<shortNameT>
+                ├── alignment_analysis
+                │   ├── <shortNameQ>_to_<shortNameT>_mapped_knownGenes.txt
+                │   ├── <shortNameQ>_to_<shortNameT>_mapped_unknownGenes.txt
+                │   └── <shortNameQ>_to_<shortNameT>_unmapped_genes.txt
+                ├── liftoff_<shortNameQ>_to_<shortNameT>_flank0.gtf
+                ├── liftoff_<shortNameQ>_to_<shortNameT>_flank0_filtered.gtf
+                └── liftoff_plot_coverage_seqID.png
+
+
+shortNameQ = query species shortName from config file (i.e. ectosp7)
+shortNameT = target species shortName from config file (i.e. esubulatus)
+completeName = species completeName from config file (i.e. Ectocarpus_sp7)
 ```
 
 ## License

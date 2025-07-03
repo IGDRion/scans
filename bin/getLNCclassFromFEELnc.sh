@@ -1,8 +1,6 @@
 #!/bin/bash
 #SBATCH --mem=6G
 #SBATCH --cpus-per-task=1
-#SBATCH --mail-user aurore.besson@univ-rennes.fr
-#SBATCH --mail-type=ALL
 
 ##########################################################################
 # Get lncRNA classification from FEELnc classifier 
@@ -43,7 +41,7 @@ fi
 echo "Config file analyzed: $CONFIG"
 echo "Working directory: $WORKDIR"
 
-OUTDIR="$WORKDIR"/work/method2/lncClassification
+OUTDIR="$WORKDIR"/scans_results/method2/lncClassification
 mkdir -p $OUTDIR
 
 
@@ -58,7 +56,7 @@ mkdir -p $OUTDIR
 regEx_lncRNA='biotype\s\"(lncRNA|lincRNA|sense_intronic|sense_exonic|sense_overlapping|antisense|lnc_RNA)\"'
 regEx_mRNA='biotype\s\"(protein_coding|mRNA)\"'
 
-# Extraction PCG et lncRNA
+# Extraction PCG and lncRNA
 sed 1d $CONFIG | while IFS=',' read -r completeName shortName pathToGTF pathToFasta;
 do
     echo $pathToGTF ;

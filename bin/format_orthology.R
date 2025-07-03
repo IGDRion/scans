@@ -24,7 +24,7 @@ orthology_dir <- args[3]
 setwd(working_dir)
 
 ## create directories to store data
-INPUTDIR <- "work/input_data"
+INPUTDIR <- "scans_results/input_data"
 dir.create(file.path(INPUTDIR, "orthology"), showWarnings = FALSE, recursive = TRUE)
 
 # Input --------------------------------------------------------------------------------------

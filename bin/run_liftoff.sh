@@ -1,8 +1,6 @@
 #!/bin/bash
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=34G
-#SBATCH --mail-user aurore.besson@univ-rennes.fr
-#SBATCH --mail-type=ALL
 
 ##########################################################################
 # Run lift-off from Shumate and Salzberg (2020)
@@ -43,7 +41,7 @@ fi
 
 # source environment
 . /local/env/envconda3.sh
-conda activate activate /home/genouest/cnrs_umr6290/abesson/conda_env/liftoff_env
+conda activate scans_env
 
 # run liftoff
 

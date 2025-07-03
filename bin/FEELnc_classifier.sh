@@ -1,13 +1,11 @@
 #!/bin/bash
 #SBATCH --mem=32G
 #SBATCH --cpus-per-task=4
-#SBATCH --mail-user aurore.besson@univ-rennes.fr
-#SBATCH --mail-type=ALL
 
 ##########################################################################
 # Run FEELnc_classifier
-# Developed by: Fabien Degalez
-# Update : 24/07/2024 (A. Besson)
+# Developed by: F. Degalez
+# Update : A. Besson
 ##########################################################################
 
 # input variable
@@ -37,7 +35,6 @@ fi
 ## Configuration of the FEELnc environment
 
 . /local/env/envconda.sh
-conda activate /home/genouest/cnrs_umr6290/tderrien/bioconda_progs/FEELnc_v0.2
-
+conda activate scans_env
 
 FEELnc_classifier.pl -i $LNC -a $MRNA -l $LOG > $OUT 

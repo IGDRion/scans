@@ -82,8 +82,8 @@ LOG_FILE="$COMPDIR/alignment.log"
     ## launch liftoff script
 
     ### source environment
-    . /local/env/envconda3.sh
-    conda activate activate /home/genouest/cnrs_umr6290/abesson/conda_env/scans_env
+    . /local/env/envconda.sh
+    conda activate scans_env
 
     ### run liftoff
     file_name=$(basename $QUERY_GTF .gtf)_"$BIOTYPE".gtf

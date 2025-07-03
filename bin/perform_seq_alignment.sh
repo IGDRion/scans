@@ -1,25 +1,22 @@
 #!/bin/bash
-#SBATCH --mail-user aurore.besson@univ-rennes.fr
-#SBATCH --mail-type=ALL
 #SBATCH --mem=34G
 #SBATCH --cpus-per-task=16
 
 ##########################################################################
-# Perform sequence alignment using liftoff and bedtools 
+# Perform sequence alignment using Liftoff and Bedtools 
 # Developed by: A. Besson
-# Updated by : 
 ##########################################################################
 
 PROGNAME=$(basename $0)
 
 # Function to display usage
 usage() {
-    echo "Usage: $PROGNAME --config <CONFIG> --workdir <WORKDIR> [options]"
+    echo "Usage: $PROGNAME --config <CONFIG> --output <WORKDIR> [options]"
     echo "Options:"
     echo "  --biotype [mRNA|lncRNA]     Biotype to analyze (default: lncRNA)"
-    echo "  --flank [0.0-1.0]               Flank fraction for liftoff (default: 0)"
-    echo "  --coverage [0.0-1.0]            Coverage fraction for liftoff (default: 0.5)"
-    echo "  --identity [0.0-1.0]            Sequence identity fraction for liftoff (default: 0)"
+    echo "  --flank [0.0-1.0]           Flank fraction for liftoff (default: 0)"
+    echo "  --coverage [0.0-1.0]        Coverage fraction for liftoff (default: 0.5)"
+    echo "  --identity [0.0-1.0]        Sequence identity fraction for liftoff (default: 0)"
     exit 1
 }
 
@@ -39,7 +36,7 @@ IDENTITY=0
 while [[ $# -gt 0 ]]; do
     case "$1" in
         --config) CONFIG="$2"; shift 2 ;;
-        --workdir) WORKDIR="$2"; shift 2 ;;
+        --output) WORKDIR="$2"; shift 2 ;;
         --biotype) BIOTYPE="$2"; shift 2 ;;
         --flank) FLANK="$2"; shift 2 ;;
         --coverage) COVERAGE="$2"; shift 2 ;;
@@ -89,7 +86,7 @@ for ((i = 0; i < ${#species[@]}; i++)); do
 
             # result files/directories
             ## directory results by species
-            RESULTS="$WORKDIR"/work/method3/"${shortName[$species1]}"
+            RESULTS="$WORKDIR"/scans_results/method3/"${shortName[$species1]}"
             echo "mkdir -p $RESULTS"
 
             ## files: subset annotation by biotype & feature database associated

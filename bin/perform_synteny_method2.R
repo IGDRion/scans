@@ -26,9 +26,9 @@ orthology_dir <- args[3]
 setwd(working_dir)
 
 ## create directories to store data in `method2``
-dir_ortho <- paste0(working_dir,"/work/method2/orthoFeelnc")
-dir_synt_byPair <- paste0(working_dir,"/work/method2/syntenyByPairFeelnc")
-dir_synt_bySpecies <- paste0(working_dir,"/work/method2/mergedSyntenyBySpeciesFeelnc")
+dir_ortho <- paste0(working_dir,"/scans_results/method2/orthoFeelnc")
+dir_synt_byPair <- paste0(working_dir,"/scans_results/method2/syntenyByPairFeelnc")
+dir_synt_bySpecies <- paste0(working_dir,"/scans_results/method2/mergedSyntenyBySpeciesFeelnc")
 
 dir.create(dir_ortho, recursive = T)
 dir.create(dir_synt_byPair, recursive = T)
@@ -243,21 +243,21 @@ for (i in 1:nrow(toWork)){
     homology.file <- homology.file[homology.file[,3] == "ortholog_one2one", ]
     
     ## Import Annotation file
-    annot_1 <- read.delim(paste0("work/input_data/gnInfo/", completeName_source,
+    annot_1 <- read.delim(paste0("scans_results/input_data/gnInfo/", completeName_source,
                                  "_gnInfo.tsv"),
                           header = T, stringsAsFactors = F)
     
-    annot_2 <- read.delim(paste0("work/input_data/gnInfo/", completeName_target,
+    annot_2 <- read.delim(paste0("scans_results/input_data/gnInfo/", completeName_target,
                                  "_gnInfo.tsv"),
                           header = T, stringsAsFactors = F)
     
     ## Import lncRNA file
     # lncRNA configuration files
-    lnc_1 <- read.delim(paste0("work/method2/lncClassification/", completeName_source, "_lncConfiguration_feelncclassifier.tsv"),
+    lnc_1 <- read.delim(paste0("scans_results/method2/lncClassification/", completeName_source, "_lncConfiguration_feelncclassifier.tsv"),
                         header = T, stringsAsFactors = F)
     toKeep_lnc1 <- colnames(lnc_1)
     
-    lnc_2 <- read.delim(paste0("work/method2/lncClassification/", completeName_target, "_lncConfiguration_feelncclassifier.tsv"),
+    lnc_2 <- read.delim(paste0("scans_results/method2/lncClassification/", completeName_target, "_lncConfiguration_feelncclassifier.tsv"),
                         header = T, stringsAsFactors = F)
     toKeep_lnc2 <- colnames(lnc_2)
     
