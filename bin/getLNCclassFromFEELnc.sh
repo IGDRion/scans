@@ -1,6 +1,4 @@
 #!/bin/bash
-#SBATCH --mem=6G
-#SBATCH --cpus-per-task=1
 
 ##########################################################################
 # Get lncRNA classification from FEELnc classifier 

@@ -24,13 +24,17 @@ export SCANSPATH=${PWD}
 export PATH=$PATH:${SCANSPATH}/bin/
 ```
 
+## System requirements
+
+SCANS requires 2.5GB of disk space for installation. By default, it requires 34 GB of RAM and 16 CPU threads to perform method 3 (sequence alignment) and only 4 CPU threads to perform method 2 (synteny). 
+
 ## Usage
 
 SCANS is composed of 3 modules.
 
-* `step1_format_input_files.sh`: Format input files (annotation, orthology).
-* `step2_perform_synteny.sh`: Perform synteny analysis by method1, method2 or both.
-* `step3_perform_seq_alignment.sh`: Perform sequence alignment using liftoff.
+* `format_input_files.sh`: Format input files (annotation, orthology).
+* `perform_synteny.sh`: Perform synteny analysis by method1, method2 or both.
+* `perform_seq_alignment.sh`: Perform sequence alignment using liftoff.
 
 SCANS requires a configuration file as input containing the annotation (gtf format), the sequence (fasta format) and the name of each species to be compared:
 ```

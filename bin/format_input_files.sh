@@ -1,6 +1,4 @@
 #!/bin/bash
-#SBATCH --mem=6G
-#SBATCH --cpus-per-task=1
 
 ##########################################################################
 # Format input files to perform synteny analysis
@@ -64,10 +62,6 @@ mkdir ${WORKDIR}
 
 echo "Config file analyzed: $CONFIG"
 echo "Working directory: $WORKDIR"
-
-# load conda env
-. /local/env/envconda.sh
-conda activate scans_env
 
 # launch R script to format orthology if needed
 echo "ANALYSIS IN PROGRESS: Format gtf files"

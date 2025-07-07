@@ -80,11 +80,6 @@ LOG_FILE="$COMPDIR/alignment.log"
     LO_OUT=liftoff_"$QUERY_SP"_to_"$TARGET_SP"_flank"$FLANK".gtf
 
     ## launch liftoff script
-
-    ### source environment
-    . /local/env/envconda.sh
-    conda activate scans_env
-
     ### run liftoff
     file_name=$(basename $QUERY_GTF .gtf)_"$BIOTYPE".gtf
     file_path="$WORKDIR"/"$file_name"

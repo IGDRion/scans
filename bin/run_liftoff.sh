@@ -39,12 +39,6 @@ fi
 # CODE
 ###########################
 
-# source environment
-. /local/env/envconda3.sh
-conda activate scans_env
-
 # run liftoff
-
-## run liftoff tool
 echo "liftoff -g $QUERY_GTF -o $OUTFILE -p 8 $TARGET_FA $QUERY_FA -flank $FLANK -f $FEATURES -dir $OUTDIR -u $OUTDIR/unmapped_features.txt -copies"
 liftoff -g $QUERY_GTF -o $OUTFILE -p 8 $TARGET_FA $QUERY_FA -flank $FLANK -f $FEATURES -dir $OUTDIR -u $OUTDIR/unmapped_features.txt -copies

@@ -34,7 +34,4 @@ fi
 
 ## Configuration of the FEELnc environment
 
-. /local/env/envconda.sh
-conda activate scans_env
-
 FEELnc_classifier.pl -i $LNC -a $MRNA -l $LOG > $OUT 

@@ -1,7 +1,4 @@
 #!/bin/bash
-#SBATCH --mem=6G
-#SBATCH --cpus-per-task=1
-
 
 ##########################################################################
 # Perform synteny analysis 
