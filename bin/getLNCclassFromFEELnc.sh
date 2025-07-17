@@ -65,29 +65,24 @@ done
 # Classification of lncRNA relative to mRNA
 mkdir ${OUTDIR}/logs
 
-job_ids=()
+while IFS=',' read -r completeName shortName pathToGTF pathToFasta; do
+    output_name=$(basename "$pathToGTF" .gtf)
+    LNC="${OUTDIR}/${completeName}_LNCextracted.tmp.gtf"
+    MRNA="${OUTDIR}/${completeName}_mRNAextracted.tmp.gtf"
+    LOG="${OUTDIR}/logs/${completeName}_feelncclassifier.log"
+    OUT="${OUTDIR}/${completeName}_classes_feelncclassifier.txt"
 
-while IFS=',' read -r completeName shortName pathToGTF pathToFasta;
-do
-    output_name=$(basename "$pathToGTF" .gtf);
-    LNC="${OUTDIR}/${completeName}_LNCextracted.tmp.gtf";
-    MRNA="${OUTDIR}/${completeName}_mRNAextracted.tmp.gtf";
-    LOG="${OUTDIR}/logs/${completeName}_feelncclassifier.log";
-    OUT="${OUTDIR}/${completeName}_classes_feelncclassifier.txt";
+    echo "Running FEELnc_classifier.sh for $completeName"
+    bash FEELnc_classifier.sh "$LNC" "$MRNA" "$LOG" "$OUT" > "$LOG" 2>&1
 
-    job_id=$(sbatch --parsable FEELnc_classifier.sh "$LNC" "$MRNA" "$LOG" "$OUT")
-    job_ids+=($job_id)
-    echo "Submitted job $job_id: sbatch FEELnc_classifier.sh $LNC $MRNA $LOG $OUT"
+    if [ $? -eq 0 ]; then
+        echo "Job for $completeName completed successfully."
+    else
+        echo "Job for $completeName failed. Check log: $LOG"
+    fi
 
-done < <(sed 1d "$CONFIG") 
+done < <(sed 1d "$CONFIG")
 
-# check files are created before continuing script
-echo "Waiting for all jobs to complete..."
-squeue --jobs "${job_ids[*]}" --states=PENDING > /dev/null
-while [[ $? -eq 0 ]]; do
-    sleep 60
-    squeue --jobs "${job_ids[*]}" --states=PENDING > /dev/null
-done
 
 # Extract gene level classification from transcript level classification
 echo "All jobs completed. Launching classification at gene level."

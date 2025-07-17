@@ -79,9 +79,6 @@ echo "Working directory: $WORKDIR"
 echo "Directory containing homology files: $ORTHOLOGY"
 echo "Synteny method used for analysis: $METHOD"
 
-# load conda env => en créer un spécifiquement pour ça ??
-. /local/env/envconda.sh
-conda activate scans_env
 
 # perform synteny according method argument
 case "$METHOD" in

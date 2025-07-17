@@ -16,7 +16,7 @@ git clone https://github.com/IGDRion/scans.git
 Go to scans repository and create conda environment
 ```
 cd scans
-conda env create -f scans.yml
+conda env create -f SCANS_condaEnv.yml
 ```
 Export SCANSPATH variable
 ```
