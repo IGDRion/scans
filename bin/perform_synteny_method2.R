@@ -41,31 +41,6 @@ config <- read.table(config_path, header = TRUE, sep = ",", stringsAsFactors = F
 
 # Functions ---------------------------------------------------------------------------------------
 
-## function to extract target lncRNA linked to the homologous PCG
-orthologous.fct <- function(i){
-    PCG_lnc_1 <- lnc_1[lnc_1$feelLncPcgGnId == i, ]
-    
-    # Extraction of the lncRNA linked to the homologous PCG in species 2 
-    homologous_i <- unlist(homology.file[(homology.file[, 1] == i | homology.file[, 2] == i), 1:2])
-    homologous_i <- setdiff(homologous_i, i)
-    if (!(identical(homologous_i, character(0)))) {
-        PCG_lnc_2 <- lnc_2[lnc_2$feelLncPcgGnId == homologous_i, ]
-    } 
-    
-    PCG_lnc_1_sub <- PCG_lnc_1[, c(1,3:5,7)]
-    PCG_lnc_2_sub <- PCG_lnc_2[, c(1,3:5,7)]
-    
-    res_i <- merge(PCG_lnc_1_sub, PCG_lnc_2_sub,
-                   by.x = "feelLncPcgClassName", by.y = "feelLncPcgClassName")
-    
-    if (nrow(res_i) == 0){
-        return(NA)
-    }
-    
-    res_i <- res_i[ , c(4,2,1,3,5,8,6,1,7,9)]
-    return(res_i)
-}
-
 ## function to determine class of orthology
 whatOrthologies <- function(x){
     nbLncRNA_species1 <- str_count(x[1], ";")+1
@@ -307,8 +282,37 @@ for (i in 1:nrow(toWork)){
     
     toExtract <- lnc_1$feelLncPcgGnId %in% homology.file[, 1] | lnc_1$feelLncPcgGnId %in% homology.file[, 2]
     PCG_homologous <- unique(lnc_1[toExtract, "feelLncPcgGnId"])
-       
-    res <- pbsapply(PCG_homologous[], orthologous.fct, USE.NAMES = T)
+
+    # function to extract target lncRNA linked to the homologous PCG
+    res <- pbsapply(PCG_homologous, function(i) {
+        # lncRNAs associated to PCG from species 1
+        PCG_lnc_1 <- lnc_1[lnc_1$feelLncPcgGnId == i, ]
+
+        # Extraction of homologous lncRNAs from species 2
+        homologous_i <- unlist(homology.file[(homology.file[, 1] == i | homology.file[, 2] == i), 1:2])
+        homologous_i <- setdiff(homologous_i, i)
+
+        # Check if homologues
+        if (identical(homologous_i, character(0))) {
+            return(NA)
+        }
+
+        PCG_lnc_2 <- lnc_2[lnc_2$feelLncPcgGnId %in% homologous_i, ]
+
+        PCG_lnc_1_sub <- PCG_lnc_1[, c(1, 3:5, 7)]
+        PCG_lnc_2_sub <- PCG_lnc_2[, c(1, 3:5, 7)]
+
+        res_i <- merge(PCG_lnc_1_sub, PCG_lnc_2_sub,
+                   by.x = "feelLncPcgClassName", by.y = "feelLncPcgClassName")
+
+        if (nrow(res_i) == 0) {
+            return(NA)
+        }
+
+        res_i <- res_i[, c(4, 2, 1, 3, 5, 8, 6, 1, 7, 9)]
+        return(res_i)
+    }, USE.NAMES = TRUE)
+
     res <- res[!is.na(res)]
     res <- do.call(rbind, res)
     
