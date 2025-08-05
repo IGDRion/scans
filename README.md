@@ -35,6 +35,7 @@ SCANS is composed of 3 modules.
 * `format_input_files.sh`: Format input files (annotation, orthology).
 * `perform_synteny.sh`: Perform synteny analysis by method1, method2 or both.
 * `perform_seq_alignment.sh`: Perform sequence alignment using liftoff.
+* `process_output_results.sh`: Additional analysis (global results of all methods for one species) 
 
 SCANS requires a configuration file as input containing the annotation (gtf format), the sequence (fasta format) and the name of each species to be compared:
 ```
@@ -100,6 +101,16 @@ Options :
   --identity [0.0-1.0]         Sequence identity fraction for liftoff (default: 0)
 ```
 
+### Optional: additional output analysis
+```
+usage: process_output_results.sh --summary --species shortName --resultsDir scans_results
+
+Required input :
+  --species shortName              Species shortName in config file
+  --resultsDir scans_results       Directory path containing all output files from SCANS
+
+```
+
 ## Output
 
 ```
@@ -124,6 +135,8 @@ WORKING_DIR
     │   └── syntenyByPairFeelnc
     │       └── <shortNameQ>-<shortNameT>_lncConfigurationHomologyAggregated.tsv
     └── method3
+        ├── mergedseqAlignBySpecies
+        │   └── <completeName>_seqAlignMerged.tsv
         └── <shortNameQ>
             └── <shortNameQ>_to_<shortNameT>
                 ├── alignment_analysis
