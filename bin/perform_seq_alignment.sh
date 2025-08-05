@@ -147,3 +147,11 @@ for ((i = 0; i < ${#species[@]}; i++)); do
 done
 echo "All sequence alignments done."
 echo "$(date +"%d.%m.%Y %H:%M")"
+
+# Generate global results by species
+if [ $BIOTYPE = "lncRNA" ]; then
+    echo "Generate global results for alignment analysis - IN PROGRESS"
+    Rscript getGlobalResultMethod3.R $CONFIG $WORKDIR
+else
+    echo "mRNA biotype analyzed. No global results file generated."
+fi
