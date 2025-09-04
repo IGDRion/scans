@@ -146,11 +146,11 @@ Two visualization plots are available based on upset plot.
 
 Using `byPair` option, you will obtain the number of one-to-one orthologous lncRNAs for one pair of species determined by each method separately or by several methods.
 
-![byPair figure]()
+<img width="1000" height="800" alt="upsetPlot_ectosp7_vs_esubulatus_ortho1to1lnc_allMethods" src="https://github.com/user-attachments/assets/5d4d081d-e60d-4d21-849e-6c62fc444c00" />
 
 Using `byMethod` option, you will obtain the number of one-to-one orthologous lncRNAs obtained by one choosen method for one species compared to all other species analyzed.
 
-![byMethod figure]()
+<img width="1500" height="1200" alt="upsetPlot_ectosp7_ortho1to1lnc_met1" src="https://github.com/user-attachments/assets/9146858e-7a91-4bd6-8571-5c83ce1bce5a" />
 
 ## Output
 
