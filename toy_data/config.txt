@@ -1,0 +1,4 @@
+completeName,shortName,pathToGTF,pathToFasta
+Ectocarpus_sp7,ectosp7,annotation/Ectocarpus_sp7.gtf,sequence/Ectocarpus_sp7.fa
+Ectocarpus_subulatus,esubulatus,annotation/Ectocarpus_subulatus.gtf,sequence/Ectocarpus_subulatus.fa
+Scytosiphon_promiscuus,spromiscuus,annotation/Scytosiphon_promiscuus.gtf,sequence/Scytosiphon_promiscuus.fa
