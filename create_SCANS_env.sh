@@ -31,5 +31,5 @@ conda install -y \
   conda-forge::r-ggpubr=0.6.0 \
   conda-forge::r-upsetr=1.4.0 \
 
-echo "Installation terminée pour l'environnement $ENV_NAME"
-echo "Pour activer l'environnement, tapez : conda activate $ENV_NAME"
+echo "Conda environment installed: $ENV_PATH"
+echo "To activate SCANS environment: conda activate $ENV_PATH"

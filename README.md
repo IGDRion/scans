@@ -16,7 +16,8 @@ git clone https://github.com/IGDRion/scans.git
 Go to scans repository and create conda environment
 ```
 cd scans
-conda env create -f SCANS_condaEnv.yml
+bash create_SCANS_env.sh
+
 ```
 Export SCANSPATH variable
 ```
@@ -24,18 +25,20 @@ export SCANSPATH=${PWD}
 export PATH=$PATH:${SCANSPATH}/bin/
 ```
 
+To test SCANS, a toy dataset is available in `toy_data` directory. Sequence files need to be decompressed before SCANS analysis. See the [tutorial](https://github.com/IGDRion/scans/wiki/Tutorial.md) for more details. 
+
 ## System requirements
 
 SCANS requires 2.5GB of disk space for installation. By default, it requires 34 GB of RAM and 16 CPU threads to perform method 3 (sequence alignment) and only 4 CPU threads to perform method 2 (synteny). 
 
 ## Usage
 
-SCANS is composed of 3 modules.
+SCANS is composed of 4 modules.
 
 * `format_input_files.sh`: Format input files (annotation, orthology).
 * `perform_synteny.sh`: Perform synteny analysis by method1, method2 or both.
 * `perform_seq_alignment.sh`: Perform sequence alignment using liftoff.
-* `process_output_results.sh`: Additional analysis (global results of all methods for one species) 
+* `process_output_results.sh`: Additional analysis (global results of all methods for one species + visualization) 
 
 SCANS requires a configuration file as input containing the annotation (gtf format), the sequence (fasta format) and the name of each species to be compared:
 ```
@@ -57,6 +60,7 @@ Options :
   --orthology ORTHOLOGY_DIR     path to directory containing orthology files to format for synteny analysis
 
 ```
+
 **Note:**
 
 Orthology files have to be concordant with annotation files (identical `gene_id`, same annotation version) and can be generated using tool as [`OrthoFinder`](https://github.com/davidemms/OrthoFinder) or directly downloaded from Ensembl database (Compara).
@@ -86,6 +90,9 @@ Options :
   --synteny [method1|method2|both]    synteny method to perform (default: method1)
 
 ```
+
+Feel free to see the [dedicated wiki page](https://github.com/IGDRion/scans/wiki/Understanding-how-methods-work#synteny-methods) for further explanations on methods used.
+
 ### Step3: sequence alignment analysis
 ```
 usage: perform_seq_alignment.sh --config config --output WORKING_DIR
@@ -101,7 +108,14 @@ Options :
   --identity [0.0-1.0]         Sequence identity fraction for liftoff (default: 0)
 ```
 
+Feel free to see the [dedicated wiki page](https://github.com/IGDRion/scans/wiki/Understanding-how-methods-work#sequence-alignment-method) for further explanations on methods used.
+
 ### Optional: additional output analysis
+There are two optional output analysis available:
+- perform summary analysis on the 3 method results
+- visualize one-to-one orthologous lncRNAs results by species pair or by method for one species
+
+##### Summary analysis option
 ```
 usage: process_output_results.sh --summary --species shortName --resultsDir scans_results
 
@@ -111,6 +125,33 @@ Required input :
 
 ```
 
+##### Visualization option
+```
+usage: process_output_results.sh --upsetPlot [byPair|byMethod]
+
+Required input for both `byPair|byMethod` options:
+  --species shortName              Query shortName species in config file
+  --resultsDir scans_results       Directory path containing all output files from SCANS
+  --config config.txt              Path to config file used for analysis
+
+Required input for `byPair` option (M1,M2,M3 with species1 vs species 2)
+  --species2                       Target shortName species to perform comparison
+
+Required input for `byMethod` option (one species vs all in one method)
+  --method [met1|met1|met3]        Method choice to perform upsetPlot
+
+```
+
+Two visualization plots are available based on upset plot.
+
+Using `byPair` option, you will obtain the number of one-to-one orthologous lncRNAs for one pair of species determined by each method separately or by several methods.
+
+![byPair figure]()
+
+Using `byMethod` option, you will obtain the number of one-to-one orthologous lncRNAs obtained by one choosen method for one species compared to all other species analyzed.
+
+![byMethod figure]()
+
 ## Output
 
 ```
@@ -118,8 +159,10 @@ WORKING_DIR
 └── scans_results
     ├── input_data
     │   ├── allMerged_gnInfo.tsv
-    │   └── gnInfo
-    │       └── <completeName>_gnInfo.tsv
+    │   ├── gnInfo
+    │   │   └── <completeName>_gnInfo.tsv 
+    │   └── orthology
+    │       └── <shortNameQ>_<shortNameT>homology.tsv
     ├── method1
     │   ├── lncBetwPcg
     │   │   └── <completeName>_lncRNAbetweenPcg.tsv
@@ -134,24 +177,32 @@ WORKING_DIR
     │   │   └── <completeName>_feelncMerged.tsv
     │   └── syntenyByPairFeelnc
     │       └── <shortNameQ>-<shortNameT>_lncConfigurationHomologyAggregated.tsv
-    └── method3
-        ├── mergedseqAlignBySpecies
-        │   └── <completeName>_seqAlignMerged.tsv
-        └── <shortNameQ>
-            └── <shortNameQ>_to_<shortNameT>
-                ├── alignment_analysis
-                │   ├── <shortNameQ>_to_<shortNameT>_mapped_knownGenes.txt
-                │   ├── <shortNameQ>_to_<shortNameT>_mapped_unknownGenes.txt
-                │   └── <shortNameQ>_to_<shortNameT>_unmapped_genes.txt
-                ├── liftoff_<shortNameQ>_to_<shortNameT>_flank0.gtf
-                ├── liftoff_<shortNameQ>_to_<shortNameT>_flank0_filtered.gtf
-                └── liftoff_plot_coverage_seqID.png
-
+    ├── method3
+    │   ├── mergedseqAlignBySpecies
+    │   │   └── <completeName>_seqAlignMerged.tsv
+    │   └── <shortNameQ>
+    │       └── <shortNameQ>_to_<shortNameT>
+    │           ├── alignment_analysis
+    │           │   ├── <shortNameQ>_to_<shortNameT>_mapped_knownGenes.txt
+    │           │   ├── <shortNameQ>_to_<shortNameT>_mapped_unknownGenes.txt
+    │           │   └── <shortNameQ>_to_<shortNameT>_unmapped_genes.txt
+    │           ├── liftoff_<shortNameQ>_to_<shortNameT>_flank0.gtf
+    │           ├── liftoff_<shortNameQ>_to_<shortNameT>_flank0_filtered.gtf
+    │           └── liftoff_plot_coverage_seqID.png
+    ├── plots
+    └── results_summary
+        ├── summaryByPair
+        │   └── <shortNameQ>
+        |       └── <shortNameQ>_<shortNameT>_globalResults.tsv
+        └── <shortNameQ>_conservation.tsv
 
 shortNameQ = query species shortName from config file (i.e. ectosp7)
 shortNameT = target species shortName from config file (i.e. esubulatus)
 completeName = species completeName from config file (i.e. Ectocarpus_sp7)
 ```
+
+You will find additional information to understand output files on the [wiki page](https://github.com/IGDRion/scans/wiki/Understanding-output-files).
+
 
 ## License
 
