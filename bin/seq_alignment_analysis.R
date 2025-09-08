@@ -15,7 +15,7 @@ suppressMessages(suppressWarnings(library(tidyverse)))
 ## parse command line arguments
 args = commandArgs(trailingOnly=TRUE)
 if (length(args) != 5) {
-  stop("Usage: Rscript seq_alignment_analysis.R target.gtf query.gtf overlap_query_to_target.bed unmapped_features.txt working_dir", call.=FALSE)
+  stop("Usage: seq_alignment_analysis.R target.gtf query.gtf overlap_query_to_target.bed unmapped_features.txt working_dir", call.=FALSE)
 }
 query_gtf <- args[1]
 target_gtf <- args[2]

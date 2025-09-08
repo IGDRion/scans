@@ -82,7 +82,7 @@ if [[ "$MODE" == "summary" ]]; then
     usage
   fi
   echo "Global summary analysis of $SPECIES - IN PROGRESS."
-  Rscript getGlobalSummary.R "$SPECIES" "$WORKDIR"
+  getGlobalSummary.R "$SPECIES" "$WORKDIR"
 
 elif [[ "$MODE" == "upsetPlot" ]]; then
   if [[ -z "$UPSETPLOT" || -z "$SPECIES" || -z "$WORKDIR" || -z "$CONFIG" ]]; then
@@ -95,7 +95,7 @@ elif [[ "$MODE" == "upsetPlot" ]]; then
       echo "Missing requested argument for --upsetPlot byPair"
       usage
     fi
-    Rscript getUpsetPlot.R "$UPSETPLOT" "$SPECIES" "$SPECIES2" "$WORKDIR" "$CONFIG"
+    getUpsetPlot.R "$UPSETPLOT" "$SPECIES" "$SPECIES2" "$WORKDIR" "$CONFIG"
 
   elif [[ "$UPSETPLOT" == "byMethod" ]]; then
     if [[ -z "$METHOD" ]]; then
@@ -108,7 +108,7 @@ elif [[ "$MODE" == "upsetPlot" ]]; then
       usage
       ;;
     esac
-    Rscript getUpsetPlot.R "$UPSETPLOT" "$SPECIES" "$METHOD" "$WORKDIR" "$CONFIG"
+    getUpsetPlot.R "$UPSETPLOT" "$SPECIES" "$METHOD" "$WORKDIR" "$CONFIG"
   else
     echo "You must choose byPair or byMethod for --upsetPlot option"
     usage

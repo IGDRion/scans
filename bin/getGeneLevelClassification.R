@@ -16,7 +16,7 @@ suppressWarnings(suppressMessages(library(rtracklayer)))
 ## parse command line arguments
 args = commandArgs(trailingOnly=TRUE)
 if (length(args) != 2) {
-  stop("Usage: Rscript getGeneLevelClassification.R config.txt working_dir", call.=FALSE)
+  stop("Usage: getGeneLevelClassification.R config.txt working_dir", call.=FALSE)
 }
 config.path <- args[1]
 working_dir <- args[2]

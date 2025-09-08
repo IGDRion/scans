@@ -17,7 +17,7 @@ suppressWarnings(suppressMessages(library(tidyr)))
 ## parse command line arguments
 args = commandArgs(trailingOnly=TRUE)
 if (length(args) != 2) {
-  stop("Usage: Rscript getGlobalResultMethod3.R config.txt working_dir", call.=FALSE)
+  stop("Usage: getGlobalResultMethod3.R config.txt working_dir", call.=FALSE)
 }
 config <- args[1]
 working_dir <- args[2]

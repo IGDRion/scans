@@ -17,7 +17,7 @@ suppressMessages(suppressWarnings(library(ggpubr)))
 ## parse command line arguments
 args = commandArgs(trailingOnly=TRUE)
 if (length(args) != 5) {
-  stop("Usage: Rscript getUpsetPlot.R upsetMode shortNameSpecies specificArg working_dir config.txt", call.=FALSE)
+  stop("Usage: getUpsetPlot.R upsetMode shortNameSpecies specificArg working_dir config.txt", call.=FALSE)
 }
 upsetMode <- args[1]
 species <- args[2]

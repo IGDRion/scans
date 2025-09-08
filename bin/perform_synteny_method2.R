@@ -16,7 +16,7 @@ suppressWarnings(suppressMessages(library(dplyr)))
 ## parse command line arguments
 args = commandArgs(trailingOnly=TRUE)
 if (length(args) != 3) {
-  stop("Usage: Rscript perform_synteny_method2.R config.txt working_dir orthology_dir", call.=FALSE)
+  stop("Usage: perform_synteny_method2.R config.txt working_dir orthology_dir", call.=FALSE)
 }
 config_path <- args[1]
 working_dir <- args[2]

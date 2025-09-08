@@ -65,12 +65,12 @@ echo "Working directory: $WORKDIR"
 
 # launch R script to format orthology if needed
 echo "ANALYSIS IN PROGRESS: Format gtf files"
-Rscript format_gtf.R $CONFIG $WORKDIR
+format_gtf.R $CONFIG $WORKDIR
 
 if [[ "$ORTHOLOGY" == "no_orthology" ]] ; then
     echo "No orthology file reformatting"
 else
     echo "ANALYSIS IN PROGRESS: Format orthology files"
     echo "Directory containing homology files: $ORTHOLOGY"
-    Rscript format_orthology.R $CONFIG $WORKDIR $ORTHOLOGY
+    format_orthology.R $CONFIG $WORKDIR $ORTHOLOGY
 fi

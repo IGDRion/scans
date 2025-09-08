@@ -16,7 +16,7 @@ suppressWarnings(suppressMessages(library(pbapply)))
 ## parse command line arguments
 args = commandArgs(trailingOnly=TRUE)
 if (length(args) != 2) {
-  stop("Usage: Rscript getGlobalSummary.R shortNameSpecies working_dir", call.=FALSE)
+  stop("Usage: getGlobalSummary.R shortNameSpecies working_dir", call.=FALSE)
 }
 species <- args[1]
 working_dir <- args[2]

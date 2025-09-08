@@ -16,7 +16,7 @@ suppressMessages(suppressWarnings(library(ggplot2)))
 ## parse command line arguments
 args = commandArgs(trailingOnly=TRUE)
 if (length(args) != 5) {
-  stop("Usage: Rscript filter_liftoffOutput.R liftoff_out liftoff_modif coverage_cutoff identity_cutoff working_dir", call.=FALSE)
+  stop("Usage: filter_liftoffOutput.R liftoff_out liftoff_modif coverage_cutoff identity_cutoff working_dir", call.=FALSE)
 }
 liftoff_out <- args[1]
 liftoff_modif <- args[2]

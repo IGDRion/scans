@@ -14,7 +14,7 @@ suppressWarnings(suppressMessages(library(tidyverse)))
 ## parse command line arguments
 args = commandArgs(trailingOnly=TRUE)
 if (length(args) != 2) {
-  stop("Usage: Rscript format_gtf.R config.txt working_dir", call.=FALSE)
+  stop("Usage: format_gtf.R config.txt working_dir", call.=FALSE)
 }
 config_file <- args[1]
 working_dir <- args[2]

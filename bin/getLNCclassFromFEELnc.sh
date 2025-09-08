@@ -86,5 +86,5 @@ done < <(sed 1d "$CONFIG")
 
 # Extract gene level classification from transcript level classification
 echo "All jobs completed. Launching classification at gene level."
-echo "Rscript getGeneLevelClassification.R "${CONFIG}" "${OUTDIR}""
-Rscript getGeneLevelClassification.R "${CONFIG}" "${OUTDIR}"
+echo "getGeneLevelClassification.R "${CONFIG}" "${OUTDIR}""
+getGeneLevelClassification.R "${CONFIG}" "${OUTDIR}"

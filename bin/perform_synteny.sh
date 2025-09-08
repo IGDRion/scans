@@ -84,7 +84,7 @@ echo "Synteny method used for analysis: $METHOD"
 case "$METHOD" in
     method1)
         echo "Synteny method applied: method 1"
-        Rscript perform_synteny_method1.R $CONFIG $WORKDIR $ORTHOLOGY
+        perform_synteny_method1.R $CONFIG $WORKDIR $ORTHOLOGY
         ;;
     method2)
         echo "Synteny method 2: perform FEELnc classification."      
@@ -92,20 +92,20 @@ case "$METHOD" in
         echo "bash getLNCclassFromFEELnc.sh $CONFIG $WORKDIR"
 
         echo "Synteny method 2: perform synteny."
-        Rscript perform_synteny_method2.R "$CONFIG" "$WORKDIR" "$ORTHOLOGY"
-        echo "Rscript perform_synteny_method2.R "$CONFIG" "$WORKDIR" "$ORTHOLOGY""
+        perform_synteny_method2.R "$CONFIG" "$WORKDIR" "$ORTHOLOGY"
+        echo "perform_synteny_method2.R "$CONFIG" "$WORKDIR" "$ORTHOLOGY""
 
         ;;
     both)
         echo "Synteny method applied: method 1"
-        Rscript perform_synteny_method1.R $CONFIG $WORKDIR $ORTHOLOGY
+        perform_synteny_method1.R $CONFIG $WORKDIR $ORTHOLOGY
 
         echo "Synteny method 2: perform FEELnc classification."      
         bash getLNCclassFromFEELnc.sh "$CONFIG" "$WORKDIR"
         echo "bash getLNCclassFromFEELnc.sh $CONFIG $WORKDIR"
 
         echo "Synteny method 2: perform synteny."
-        Rscript perform_synteny_method2.R "$CONFIG" "$WORKDIR" "$ORTHOLOGY"
+        perform_synteny_method2.R "$CONFIG" "$WORKDIR" "$ORTHOLOGY"
         echo "bash getLNCclassFromFEELnc.sh $CONFIG $WORKDIR"
         ;;
 esac

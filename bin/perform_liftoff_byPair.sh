@@ -127,7 +127,7 @@ LOG_FILE="$COMPDIR/alignment.log"
     # filtered file
     LO_FILTER="$COMPDIR"/$(basename $LO_OUT2 .gtf)_filtered.gtf
 
-    Rscript filter_liftoffOutput.R $LO_OUT2 $LO_FILTER $COVERAGE $IDENTITY $COMPDIR
+    filter_liftoffOutput.R $LO_OUT2 $LO_FILTER $COVERAGE $IDENTITY $COMPDIR
 
     ### STEP3 - Bedtools intersect
     echo "Step3: bedtools analysis - $(date +"%d.%m.%Y %H:%M")"
@@ -157,8 +157,8 @@ LOG_FILE="$COMPDIR/alignment.log"
     ALIGN_DIR="$COMPDIR"/alignment_analysis
     mkdir ${ALIGN_DIR}
 
-    echo "Rscript seq_alignment_analysis.R $QUERY_GTF $TARGET_GTF $FINAL_BED $LIFTOFF_DIR/unmapped_features.txt $ALIGN_DIR"
-    Rscript seq_alignment_analysis.R $QUERY_GTF $TARGET_GTF $FINAL_BED $LIFTOFF_DIR/unmapped_features.txt $ALIGN_DIR
+    echo "seq_alignment_analysis.R $QUERY_GTF $TARGET_GTF $FINAL_BED $LIFTOFF_DIR/unmapped_features.txt $ALIGN_DIR"
+    seq_alignment_analysis.R $QUERY_GTF $TARGET_GTF $FINAL_BED $LIFTOFF_DIR/unmapped_features.txt $ALIGN_DIR
 
     echo "Sequence alignment done: $(date +"%d.%m.%Y %H:%M")"
 
