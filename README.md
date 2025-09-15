@@ -154,6 +154,8 @@ Using `byMethod` option, you will obtain the number of one-to-one orthologous ln
 
 ## Output
 
+The output directory are presented as followed: 
+
 ```
 WORKING_DIR
 └── scans_results
