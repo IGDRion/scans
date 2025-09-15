@@ -62,7 +62,7 @@ determine_relationship <- function(geneID_sp1, geneID_sp2) {
 for (ortho.path in ortho.list){
     # retrieve species names
     cat("orthology file in progress: ", basename(ortho.path), "\n")
-    splitName <- strsplit(basename(ortho.path), "__v__|\\.")[[1]]
+    splitName <- strsplit(basename(ortho.path), "_|\\.")[[1]]
     query.name <- splitName[1]
     target.name <- splitName[2]
     
