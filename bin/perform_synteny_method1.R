@@ -26,7 +26,7 @@ orthology_dir <- args[3]
 ## set working directory
 setwd(working_dir)
 
-## create directories to store data in `method1``
+## create directories to store data in `method1`
 SYNTDIR <- "scans_results/method1"
 dir.create(file.path(SYNTDIR, "lncBetwPcg"), showWarnings = FALSE, recursive = TRUE)
 dir.create(file.path(SYNTDIR, "syntenyByPair"), showWarnings = FALSE)
