@@ -68,7 +68,7 @@ echo "ANALYSIS IN PROGRESS: Format gtf files"
 format_gtf.R $CONFIG $WORKDIR
 
 if [[ "$ORTHOLOGY" == "no_orthology" ]] ; then
-    echo " No `--orthology` option. Format analysis is done."
+    echo " No '--orthology' option. Format analysis is done."
 else
     echo "ANALYSIS IN PROGRESS: Format orthology files"
     echo "Directory containing homology files: $ORTHOLOGY"

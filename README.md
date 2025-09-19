@@ -63,7 +63,7 @@ Options :
 
 **Note:**
 
-Orthology files have to be concordant with annotation files (identical `gene_id`, same annotation version) and can be generated using tool as [`OrthoFinder`](https://github.com/davidemms/OrthoFinder) or directly downloaded from Ensembl database (Compara).
+Orthology files have to be concordant with annotation files (orthology at gene level with main/longuest isoform, identical `gene_id`, same annotation version) and can be generated using tool as [`OrthoFinder`](https://github.com/davidemms/OrthoFinder) or directly downloaded from Ensembl database (Compara).
 
 Orthology files in ORTHOLOGY_DIR must be formatted as  `<shortName_QUERY>_<shortName_TARGET>_homology.tsv` to be concordant with configuration file.
 
@@ -76,6 +76,12 @@ Ec-05_001930	SL_01-107.5	ortholog_one2one
 Ec-05_002080	SL_01-123.7	ortholog_one2one
 Ec-05_002920	SL_01-12579	ortholog_one2many
 ```
+
+If you have output files from `OrthoFinder` as
+```
+Orthogroup  Species_query Species_Target
+```
+You can used the `--orthology` option to format properly orthology files as requested for synteny analysis (see above).
 
 ### Step2: synteny analysis
 ```
