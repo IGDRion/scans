@@ -21,15 +21,13 @@ if (length(args) != 2) {
 config.path <- args[1]
 working_dir <- args[2]
 
-## set working directory
-setwd(working_dir)
-
-
 # Input --------------------------------------------------------------------------------------
 
 ## configuration file
 config <- read.table(config.path, header = TRUE, sep = ",", stringsAsFactors = FALSE)
 
+## set working directory
+setwd(working_dir)
 
 # Functions ---------------------------------------------------------------------------------------
 ##-----------------------------------------------------##

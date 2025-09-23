@@ -87,13 +87,13 @@ case "$METHOD" in
         perform_synteny_method1.R $CONFIG $WORKDIR $ORTHOLOGY
         ;;
     method2)
-        echo "Synteny method 2: perform FEELnc classification."      
+        echo "Synteny method 2: perform FEELnc classification."  
+        echo "bash getLNCclassFromFEELnc.sh $CONFIG $WORKDIR"    
         bash getLNCclassFromFEELnc.sh "$CONFIG" "$WORKDIR"
-        echo "bash getLNCclassFromFEELnc.sh $CONFIG $WORKDIR"
 
         echo "Synteny method 2: perform synteny."
-        perform_synteny_method2.R "$CONFIG" "$WORKDIR" "$ORTHOLOGY"
         echo "perform_synteny_method2.R "$CONFIG" "$WORKDIR" "$ORTHOLOGY""
+        perform_synteny_method2.R "$CONFIG" "$WORKDIR" "$ORTHOLOGY"
 
         ;;
     both)
