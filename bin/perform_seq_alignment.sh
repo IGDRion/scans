@@ -62,7 +62,15 @@ echo "Sequence identity cut-off for liftoff: $IDENTITY"
 echo "Sequence alignment analysis - IN PROGRESS"
 
 # read config file to retrieve each species pair
-declare -A completeName shortName pathToGTF pathToFasta
+if [[ $SHELL =~ "zsh" ]]; then
+    typeset -A completeName
+    typeset -A shortName
+    typeset -A pathToGTF
+    typeset -A pathToFasta
+elif [[ $SHELL =~ "bash" ]]; then
+
+    declare -A completeName shortName pathToGTF pathToFasta
+fi
 
 while IFS=',' read -r name short gtf fasta; do
     completeName["$name"]="$name"
