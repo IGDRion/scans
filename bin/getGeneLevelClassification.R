@@ -23,11 +23,12 @@ working_dir <- args[2]
 
 # Input --------------------------------------------------------------------------------------
 
+## set working directory
+setwd(working_dir)
+
 ## configuration file
 config <- read.table(config.path, header = TRUE, sep = ",", stringsAsFactors = FALSE)
 
-## set working directory
-setwd(working_dir)
 
 # Functions ---------------------------------------------------------------------------------------
 ##-----------------------------------------------------##
@@ -150,11 +151,12 @@ for(i in 1:nrow(config)){
   ##-----------------------------------------------------##
   # Classified genes
   ##-------------
-  
-  txt.path <- list.files(working_dir, pattern = sp_name, full.names = T)
+  lncClass_dir="scans_results/method2/lncClassification"
+
+  txt.path <- list.files(lncClass_dir, pattern = sp_name, full.names = T)
   txt.path <- txt.path[grep("_classes_feelncclassifier.txt", txt.path)]
 
-  log.path <- list.files(paste0(working_dir,"/logs"), pattern = sp_name, full.names = T)
+  log.path <- list.files(paste0(lncClass_dir,"/logs"), pattern = sp_name, full.names = T)
   log.path <- log.path[grep("_feelncclassifier.log", log.path)]
 
   feelnc_results_lncRNArelativeTo_mRNA <- read.table(txt.path, header = TRUE, 
@@ -310,7 +312,7 @@ for(i in 1:nrow(config)){
   if (sum(pos_n1n) > 0) {
     annotation_gene$feelLncPcgClassName[pos_n1n] <- paste0(annotation_gene$feelLncPcgClassName[pos_n1n], "_n.1.n")
   }
-  filename <- paste0(working_dir,"/", sp_name,"_lncConfiguration_feelncclassifier.tsv")
+  filename <- paste0(lncClass_dir,"/", sp_name,"_lncConfiguration_feelncclassifier.tsv")
   write.table(annotation_gene, file = filename, 
               quote = F, sep = "\t", row.names = F, col.names = T)
   cat("FEELnc classification for",sp_name,":",filename, "\n")
