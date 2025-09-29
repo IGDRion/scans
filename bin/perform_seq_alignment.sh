@@ -63,10 +63,10 @@ echo "Sequence alignment analysis - IN PROGRESS"
 
 # read config file to retrieve each species pair
 if [[ $SHELL =~ "zsh" ]]; then
-    typeset -A completeName
-    typeset -A shortName
-    typeset -A pathToGTF
-    typeset -A pathToFasta
+    completeName=()
+    shortName=()
+    pathToGTF=()
+    pathToFasta=()
 elif [[ $SHELL =~ "bash" ]]; then
 
     declare -A completeName shortName pathToGTF pathToFasta
