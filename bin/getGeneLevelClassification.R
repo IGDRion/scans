@@ -219,7 +219,7 @@ for(i in 1:nrow(config)){
   cat("\t - annotation gene : (1) \n")
   for (i in 1:nrow(annotation_gene)) {
     if (i%%100 == 0){
-      cat(i ,"/", nrow(annotation_gene), "\n")
+      cat(sprintf("\r%5d / %d", i, nrow(annotation_gene)))
     }
     gene_id <- annotation_gene$gnId[i]
     lineNumber <- which(annotation_transcript$gnId %in% gene_id)
@@ -260,7 +260,7 @@ for(i in 1:nrow(config)){
   cat("\t - annotation gene (2): \n")
   for (i in 1:nrow(annotation_gene)) {
     if (i%%100 == 0){
-      cat(i ,"/", nrow(annotation_gene), "\n")
+      cat(sprintf("\r%5d / %d", i, nrow(annotation_gene)))
     }
     
     tmp_lnc <- data.frame(
